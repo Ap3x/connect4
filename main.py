@@ -3,26 +3,26 @@
 import pygame
 import os
 
-class State_Information_t:
-	"""
-	@brief Contains information necessary between all states
-	"""
+class typeStateInformation:
+	"""Contains information necessary between all states"""
 
 	def __init__(self, menu_option):
 		"""
-		@brief Initialize
-		@param menu_option Integer: The currently selected menu option
+		Initializes a typeStateInformation object
+
+		menu_option -- The currently selected menu option
 		"""
 
 		self.menu_option = menu_option
 
-def State_Game(state_information_instance):
+def state_game(state_information_instance):
 	"""
-	@brief Game state
-	@param state_information_instance State_Information_t: Instance containing state information
+	Game state
+
+	state_information_instance -- Instance containing state information
 	"""
 
-	while (state_information_instance.menu_option != "0"):
+	while state_information_instance.menu_option != "0":
 		os.system('cls' if os.name == 'nt' else 'clear')
 		print("  1   2   3   4   5   6   7  ")
 		print("                             ")
@@ -41,23 +41,24 @@ def State_Game(state_information_instance):
 		print("|   |   |   |   |   |   |   |")
 		print("+---------------------------+")
 		state_information_instance.menu_option = input("| > Select column: ")
-		if (state_information_instance.menu_option == "1"):
+		if state_information_instance.menu_option == "1":
 			print("##TODO##")
-		elif (state_information_instance.menu_option == "2"):
+		elif state_information_instance.menu_option == "2":
 			print("##TODO##")
-		elif (state_information_instance.menu_option == "3"):
+		elif state_information_instance.menu_option == "3":
 			print("##TODO##")
 	state_information_instance.menu_option = -1
 
-def State_GameSetup(state_information_instance, sub_menu_string, player_count):
+def state_gamesetup(state_information_instance, sub_menu_string, player_count):
 	"""
-	@brief Game-setup state
-	@param state_information_instance State_Information_t: Instance containing state information
-	@param sub_menu_string String: Either "local" or "network" indicating which submenu text to display in menu
-	@param player_count Integer: Represents number of players/number of CPU
+	Game-setup state
+
+	state_information_instance -- Instance containing state information
+	sub_menu_string -- Indicates which submenu text to display in menu ("local"/"network")
+	player_count -- Represents number of players/number of CPU
 	"""
 
-	while (state_information_instance.menu_option != "0"):
+	while state_information_instance.menu_option != "0":
 		os.system('cls' if os.name == 'nt' else 'clear')
 		print("+-----------------------+")
 		print("|       Connect 4       |")
@@ -78,23 +79,24 @@ def State_GameSetup(state_information_instance, sub_menu_string, player_count):
 		print("| 0. Back               |")
 		print("+-----------------------+")
 		state_information_instance.menu_option = input("| > Select menu option: ")
-		if (state_information_instance.menu_option == "1"):
+		if state_information_instance.menu_option == "1":
 			print("##TODO##")
-		elif (state_information_instance.menu_option == "2"):
+		elif state_information_instance.menu_option == "2":
 			print("##TODO##")
-		elif (state_information_instance.menu_option == "3"):
+		elif state_information_instance.menu_option == "3":
 			print("##TODO##")
-		elif (state_information_instance.menu_option == "9"):
-			State_Game(state_information_instance)
+		elif state_information_instance.menu_option == "9":
+			state_game(state_information_instance)
 	state_information_instance.menu_option = -1
 
-def State_LocalPlay(state_information_instance):
+def state_localplay(state_information_instance):
 	"""
-	@brief Local-play state
-	@param state_information_instance State_Information_t: Instance containing state information
+	Local-play state
+
+	state_information_instance -- Instance containing state information
 	"""
 
-	while (state_information_instance.menu_option != "0"):
+	while state_information_instance.menu_option != "0":
 		os.system('cls' if os.name == 'nt' else 'clear')
 		print("+-----------------------+")
 		print("|       Connect 4       |")
@@ -107,22 +109,22 @@ def State_LocalPlay(state_information_instance):
 		print("| 0. Back               |")
 		print("+-----------------------+")
 		state_information_instance.menu_option = input("| > Select menu option: ")
-		if (state_information_instance.menu_option == "1"):
-			State_GameSetup(state_information_instance, "local", 1)
-		elif (state_information_instance.menu_option == "2"):
-			State_GameSetup(state_information_instance, "local", 2)
-		elif (state_information_instance.menu_option == "3"):
-			State_GameSetup(state_information_instance, "local", 0)
+		if state_information_instance.menu_option == "1":
+			state_gamesetup(state_information_instance, "local", 1)
+		elif state_information_instance.menu_option == "2":
+			state_gamesetup(state_information_instance, "local", 0)
+		elif state_information_instance.menu_option == "3":
+			state_gamesetup(state_information_instance, "local", 2)
 	state_information_instance.menu_option = -1
 
-
-def State_NetworkPlay(state_information_instance):
+def state_networkplay(state_information_instance):
 	"""
-	@brief Network-play state
-	@param state_information_instance State_Information_t: Instance containing state information
+	Network-play state
+
+	state_information_instance -- Instance containing state information
 	"""
 
-	while (state_information_instance.menu_option != "0"):
+	while state_information_instance.menu_option != "0":
 		os.system('cls' if os.name == 'nt' else 'clear')
 		print("+-----------------------+")
 		print("|       Connect 4       |")
@@ -134,20 +136,20 @@ def State_NetworkPlay(state_information_instance):
 		print("| 0. Back               |")
 		print("+-----------------------+")
 		state_information_instance.menu_option = input("| > Select menu option: ")
-		if (state_information_instance.menu_option == "1"):
+		if state_information_instance.menu_option == "1":
 			print("##TODO##")
-		elif (state_information_instance.menu_option == "2"):
-			print("##TODO##")		
+		elif state_information_instance.menu_option == "2":
+			print("##TODO##")
 	state_information_instance.menu_option = -1
-	
-			
-def State_Options(state_information_instance):
+		
+def state_options(state_information_instance):
 	"""
-	@brief Options state
-	@param state_information_instance State_Information_t: Instance containing state information
+	Options state
+
+	state_information_instance -- Instance containing state information
 	"""
 
-	while (state_information_instance.menu_option != "0"):
+	while state_information_instance.menu_option != "0":
 		os.system('cls' if os.name == 'nt' else 'clear')
 		print("+-----------------------+")
 		print("|       Connect 4       |")
@@ -159,20 +161,20 @@ def State_Options(state_information_instance):
 		print("| 0. Back               |")
 		print("+-----------------------+")
 		state_information_instance.menu_option = input("| > Select menu option: ")
-		if (state_information_instance.menu_option == "1"):
+		if state_information_instance.menu_option == "1":
 			print("##TODO##")
-		elif (state_information_instance.menu_option == "2"):
+		elif state_information_instance.menu_option == "2":
 			print("##TODO##")
 	state_information_instance.menu_option = -1
 
-
-def State_MainMenu(state_information_instance):
+def state_mainmenu(state_information_instance):
 	"""
-	@brief Main Menu state
-	@param state_information_instance State_Information_t: Instance containing state information
+	Main Menu state
+
+	state_information_instance -- Instance containing state information
 	"""
 
-	while (state_information_instance.menu_option != "0"):
+	while state_information_instance.menu_option != "0":
 		os.system('cls' if os.name == 'nt' else 'clear')
 		print("+-----------------------+")
 		print("|       Connect 4       |")
@@ -183,21 +185,17 @@ def State_MainMenu(state_information_instance):
 		print("| 0. Quit               |")
 		print("+-----------------------+")
 		state_information_instance.menu_option = input("| > Select menu option: ")
-		if (state_information_instance.menu_option == "1"):
-			State_LocalPlay(state_information_instance)
-		elif (state_information_instance.menu_option == "2"):
-			State_NetworkPlay(state_information_instance)
-		elif (state_information_instance.menu_option == "3"):
-			State_Options(state_information_instance)
+		if state_information_instance.menu_option == "1":
+			state_localplay(state_information_instance)
+		elif state_information_instance.menu_option == "2":
+			state_networkplay(state_information_instance)
+		elif state_information_instance.menu_option == "3":
+			state_options(state_information_instance)
 	state_information_instance.menu_option = -1
 
-
 def main():
-	"""
-	@brief Main
-	"""
-	state_information_instance = State_Information_t(-1)
+	state_information_instance = typeStateInformation(-1)
+	state_mainmenu(state_information_instance)
 
-	State_MainMenu(state_information_instance)
-
-main()
+if __name__ == "__main__":
+	main()
