@@ -3,7 +3,8 @@
 import pygame
 import os
 
-class typeStateInformation:
+
+class TypeStateInformation:
 	"""Contains information necessary between all states"""
 
 	def __init__(self, menu_option):
@@ -14,6 +15,7 @@ class typeStateInformation:
 		"""
 
 		self.menu_option = menu_option
+
 
 def state_game(state_information_instance):
 	"""
@@ -49,6 +51,7 @@ def state_game(state_information_instance):
 			print("##TODO##")
 	state_information_instance.menu_option = -1
 
+
 def state_gamesetup(state_information_instance, sub_menu_string, player_count):
 	"""
 	Game-setup state
@@ -63,17 +66,17 @@ def state_gamesetup(state_information_instance, sub_menu_string, player_count):
 		print("+-----------------------+")
 		print("|       Connect 4       |")
 		print("+-----------------------+")
-		if (sub_menu_string == "local"):
+		if sub_menu_string == "local":
 			print("|       Local-play      |")
-		elif (sub_menu_string == "network"):
+		elif sub_menu_string == "network":
 			print("|     Network-play      |")
 		print("+-----------------------+")
 		print("|       Game Setup      |")
 		print("+-----------------------+")
 		print("| 1. SFX: ON / [OFF]    |")
-		if (player_count > 0):
+		if player_count > 0:
 			print("| 2. CPU #1 Difficulty: |")
-			if(player_count > 1):
+			if player_count > 1:
 				print("| 3. CPU #2 Difficulty: |")
 		print("| 9. Start game         |")
 		print("| 0. Back               |")
@@ -88,6 +91,7 @@ def state_gamesetup(state_information_instance, sub_menu_string, player_count):
 		elif state_information_instance.menu_option == "9":
 			state_game(state_information_instance)
 	state_information_instance.menu_option = -1
+
 
 def state_localplay(state_information_instance):
 	"""
@@ -117,6 +121,7 @@ def state_localplay(state_information_instance):
 			state_gamesetup(state_information_instance, "local", 2)
 	state_information_instance.menu_option = -1
 
+
 def state_networkplay(state_information_instance):
 	"""
 	Network-play state
@@ -141,7 +146,8 @@ def state_networkplay(state_information_instance):
 		elif state_information_instance.menu_option == "2":
 			print("##TODO##")
 	state_information_instance.menu_option = -1
-		
+
+
 def state_options(state_information_instance):
 	"""
 	Options state
@@ -166,6 +172,7 @@ def state_options(state_information_instance):
 		elif state_information_instance.menu_option == "2":
 			print("##TODO##")
 	state_information_instance.menu_option = -1
+
 
 def state_mainmenu(state_information_instance):
 	"""
@@ -193,9 +200,11 @@ def state_mainmenu(state_information_instance):
 			state_options(state_information_instance)
 	state_information_instance.menu_option = -1
 
+
 def main():
-	state_information_instance = typeStateInformation(-1)
+	state_information_instance = TypeStateInformation(-1)
 	state_mainmenu(state_information_instance)
+
 
 if __name__ == "__main__":
 	main()
