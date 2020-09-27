@@ -2,6 +2,7 @@
 
 import pygame
 import os
+import random
 
 
 class TypeStateInformation:
@@ -37,57 +38,98 @@ class TypeBoardState:
 		"""
 		print("  1   2   3   4   5   6   7  ")
 		print("                             ")
-		print("| ",self.board[0,0]," | ",self.board[0,1]," | ",self.board[0,2]," | ",self.board[0,3]," | ",self.board[0,4]," | ",self.board[0,5]," | ",self.board[0,6]," |")
-		print("+---------------------------+")
-		print("| ",self.board[1,0]," | ",self.board[1,1]," | ",self.board[1,2]," | ",self.board[1,3]," | ",self.board[1,4]," | ",self.board[1,5]," | ",self.board[1,6]," |")
-		print("+---------------------------+")
-		print("| ",self.board[2,0]," | ",self.board[2,1]," | ",self.board[2,2]," | ",self.board[2,3]," | ",self.board[2,4]," | ",self.board[2,5]," | ",self.board[2,6]," |")
-		print("+---------------------------+")
-		print("| ",self.board[3,0]," | ",self.board[3,1]," | ",self.board[3,2]," | ",self.board[3,3]," | ",self.board[3,4]," | ",self.board[3,5]," | ",self.board[3,6]," |")
-		print("+---------------------------+")
-		print("| ",self.board[4,0]," | ",self.board[4,1]," | ",self.board[4,2]," | ",self.board[4,3]," | ",self.board[4,4]," | ",self.board[4,5]," | ",self.board[4,6]," |")
-		print("+---------------------------+")
-		print("| ",self.board[5,0]," | ",self.board[5,1]," | ",self.board[5,2]," | ",self.board[5,3]," | ",self.board[5,4]," | ",self.board[5,5]," | ",self.board[5,6]," |")
-		print("+---------------------------+")
-		print("| ",self.board[6,0]," | ",self.board[6,1]," | ",self.board[6,2]," | ",self.board[6,3]," | ",self.board[6,4]," | ",self.board[6,5]," | ",self.board[6,6]," |")
-		print("+---------------------------+")
-
-class TypePlayer:
-	"""Contains information and functions necessary for the player"""
-
-	def __init__(self) -> None:
-		"""
-		Initializes a player object
-		"""
-
+		print("| ",self.board[0][0]," | ",self.board[0][1]," | ",self.board[0][2]," | ",self.board[0][3]," | ",self.board[0][4]," | ",self.board[0][5]," | ",self.board[0][6]," |")
+		print("+------------------------------------------+")
+		print("| ",self.board[1][0]," | ",self.board[1][1]," | ",self.board[1][2]," | ",self.board[1][3]," | ",self.board[1][4]," | ",self.board[1][5]," | ",self.board[1][6]," |")
+		print("+------------------------------------------+")
+		print("| ",self.board[2][0]," | ",self.board[2][1]," | ",self.board[2][2]," | ",self.board[2][3]," | ",self.board[2][4]," | ",self.board[2][5]," | ",self.board[2][6]," |")
+		print("+------------------------------------------+")
+		print("| ",self.board[3][0]," | ",self.board[3][1]," | ",self.board[3][2]," | ",self.board[3][3]," | ",self.board[3][4]," | ",self.board[3][5]," | ",self.board[3][6]," |")
+		print("+------------------------------------------+")
+		print("| ",self.board[4][0]," | ",self.board[4][1]," | ",self.board[4][2]," | ",self.board[4][3]," | ",self.board[4][4]," | ",self.board[4][5]," | ",self.board[4][6]," |")
+		print("+------------------------------------------+")
+		print("| ",self.board[5][0]," | ",self.board[5][1]," | ",self.board[5][2]," | ",self.board[5][3]," | ",self.board[5][4]," | ",self.board[5][5]," | ",self.board[5][6]," |")
+		print("+------------------------------------------+")
 
 board: TypeBoardState = TypeBoardState([[" "," "," "," "," "," "," "],
        [" "," "," "," "," "," "," "],
        [" "," "," "," "," "," "," "],
        [" "," "," "," "," "," "," "],
        [" "," "," "," "," "," "," "],
-	   [" "," "," "," "," "," "," "],
 	   [" "," "," "," "," "," "," "]]) 
 
-def state_game(state_information_instance: TypeStateInformation) -> None:
+def cpu_algorithm_easy(letter: chr) -> None:
+		"""
+		Easy Algorithm for CPU player -- choses column randomly
+
+		random_choice -- random column selection index
+		"""
+		random_choice = random.randint(0,6)
+		for i in range(5,-1,-1):
+			if board.board[i][random_choice] == " ":
+				board.board[i][random_choice] = letter
+				break
+
+class TypePlayer:
+	"""Contains information and functions necessary for the player"""
+
+	def __init__(self, turn: callable) -> None:
+		"""
+		Initializes a player object
+
+		turn -- reference to turn based function
+
+		letter -- player letter, either 'X' or 'O'
+		"""
+		self.turn: callable = turn
+
+max_x: int = 6
+max_y: int = 7
+
+def check_win() -> bool:
+	"""
+	Check if a player has achieved 4 in a row
+
+	directions -- each adjacent shift in direction
+	"""
+	directions: [[]] = [[1,0], [1,-1], [1,1], [0,1]]
+	for i in directions:
+		x_shift: int = i[0]
+		y_shift: int = i[1]
+		for x in range(0,max_x,1):
+			for y in range(0,max_y,1):
+				last_x: int = x + (3*x_shift)
+				last_y: int = y + (3*y_shift)
+				if 0 <= last_x and last_x < max_x and 0 <= last_y and last_y < max_y:
+					string: str = board.board[x][y]
+					if string != " " and string == board.board[x+x_shift][y+y_shift] and string == board.board[x+2*x_shift][y+2*y_shift] and string == board.board[last_x][last_y]:
+						return True
+	return False
+		
+def state_game(state_information_instance: TypeStateInformation, player1: TypePlayer, player2: TypePlayer) -> None:
 	"""
 	Game state
 
 	state_information_instance -- Instance containing state information
 	"""
-
-	while state_information_instance.menu_option != "0":
+	player_flag: int = 0
+	while player_flag != -1:
 		os.system("cls" if os.name == "nt" else "clear")
 		board.print_board()
-		if state_information_instance.player_count != 0:
-			state_information_instance.menu_option = input("| > Select column: ")
-		if state_information_instance.menu_option == "1":
+		if state_information_instance.player_count == 0:
+			state_information_instance.menu_option = input("Press Enter To Continue: ")
+			if player_flag % 2 == 0:
+				player1.turn('X')
+			else:
+				player2.turn('O')
+			if check_win() == True:
+				print("A Player Won")
+				player_flag = -2;	
+		elif state_information_instance.player_count == 1:
 			print("##TODO##")
-		elif state_information_instance.menu_option == "2":
+		elif state_information_instance.player_count == 2:
 			print("##TODO##")
-		elif state_information_instance.menu_option == "3":
-			print("##TODO##")
-	state_information_instance.menu_option = "-1"
+		player_flag += 1
 
 
 def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_string: str) -> None:
@@ -127,7 +169,9 @@ def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_s
 		elif state_information_instance.menu_option == "3":
 			print("##TODO##")
 		elif state_information_instance.menu_option == "9":
-			state_game(state_information_instance)
+			cpu1: TypePlayer = TypePlayer(cpu_algorithm_easy)
+			cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
+			state_game(state_information_instance, cpu1, cpu2)
 	state_information_instance.menu_option = "-1"
 
 
