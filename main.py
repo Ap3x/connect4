@@ -5,16 +5,19 @@ import os
 
 
 class TypeStateInformation:
-	"""Contains information necessary between all states :)"""
+	"""Contains information necessary between all states """
 
-	def __init__(self, menu_option: str) -> None:
+	def __init__(self, menu_option: str, player_count: int) -> None:
 		"""
 		Initializes a typeStateInformation object
 
 		menu_option -- The currently selected menu option
+
+		player_count -- Selected number of human players
 		"""
 
 		self.menu_option: str = menu_option
+		self.player_count: int = player_count
 
 
 def state_game(state_information_instance: TypeStateInformation) -> None:
@@ -52,7 +55,7 @@ def state_game(state_information_instance: TypeStateInformation) -> None:
 	state_information_instance.menu_option = "-1"
 
 
-def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_string: str, player_count: int) -> None:
+def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_string: str) -> None:
 	"""
 	Game-setup state
 
@@ -74,9 +77,9 @@ def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_s
 		print("|       Game Setup      |")
 		print("+-----------------------+")
 		print("| 1. SFX: ON / [OFF]    |")
-		if player_count > 0:
+		if state_information_instance.player_count < 2:
 			print("| 2. CPU #1 Difficulty: |")
-			if player_count > 1:
+			if state_information_instance.player_count < 1:
 				print("| 3. CPU #2 Difficulty: |")
 		print("| 9. Start game         |")
 		print("| 0. Back               |")
@@ -114,11 +117,14 @@ def state_localplay(state_information_instance):
 		print("+-----------------------+")
 		state_information_instance.menu_option = input("| > Select menu option: ")
 		if state_information_instance.menu_option == "1":
+			state_information.instance.player_count = 1;
 			state_gamesetup(state_information_instance, "local", 1)
 		elif state_information_instance.menu_option == "2":
-			state_gamesetup(state_information_instance, "local", 0)
-		elif state_information_instance.menu_option == "3":
+			state_information.instance.player_count = 2;
 			state_gamesetup(state_information_instance, "local", 2)
+		elif state_information_instance.menu_option == "3":
+			state_information.instance.player_count = 0
+			state_gamesetup(state_information_instance, "local", 0)
 	state_information_instance.menu_option = "-1"
 
 
