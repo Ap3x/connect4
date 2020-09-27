@@ -19,6 +19,55 @@ class TypeStateInformation:
 		self.menu_option: str = menu_option
 		self.player_count: int = player_count
 
+class TypeBoardState:
+	"""Contains information and functions necessary for board manipulation"""
+
+	def __init__(self, board: [[]]) -> None:
+		"""
+		Initializes a board object
+
+		board -- 2D character array to represent the board
+		"""
+
+		self.board: [[]] = board
+
+	def print_board(self) -> None:
+		"""
+		Prints the board object
+		"""
+		print("  1   2   3   4   5   6   7  ")
+		print("                             ")
+		print("| ",self.board[0,0]," | ",self.board[0,1]," | ",self.board[0,2]," | ",self.board[0,3]," | ",self.board[0,4]," | ",self.board[0,5]," | ",self.board[0,6]," |")
+		print("+---------------------------+")
+		print("| ",self.board[1,0]," | ",self.board[1,1]," | ",self.board[1,2]," | ",self.board[1,3]," | ",self.board[1,4]," | ",self.board[1,5]," | ",self.board[1,6]," |")
+		print("+---------------------------+")
+		print("| ",self.board[2,0]," | ",self.board[2,1]," | ",self.board[2,2]," | ",self.board[2,3]," | ",self.board[2,4]," | ",self.board[2,5]," | ",self.board[2,6]," |")
+		print("+---------------------------+")
+		print("| ",self.board[3,0]," | ",self.board[3,1]," | ",self.board[3,2]," | ",self.board[3,3]," | ",self.board[3,4]," | ",self.board[3,5]," | ",self.board[3,6]," |")
+		print("+---------------------------+")
+		print("| ",self.board[4,0]," | ",self.board[4,1]," | ",self.board[4,2]," | ",self.board[4,3]," | ",self.board[4,4]," | ",self.board[4,5]," | ",self.board[4,6]," |")
+		print("+---------------------------+")
+		print("| ",self.board[5,0]," | ",self.board[5,1]," | ",self.board[5,2]," | ",self.board[5,3]," | ",self.board[5,4]," | ",self.board[5,5]," | ",self.board[5,6]," |")
+		print("+---------------------------+")
+		print("| ",self.board[6,0]," | ",self.board[6,1]," | ",self.board[6,2]," | ",self.board[6,3]," | ",self.board[6,4]," | ",self.board[6,5]," | ",self.board[6,6]," |")
+		print("+---------------------------+")
+
+class TypePlayer:
+	"""Contains information and functions necessary for the player"""
+
+	def __init__(self) -> None:
+		"""
+		Initializes a player object
+		"""
+
+
+board: TypeBoardState = TypeBoardState([[" "," "," "," "," "," "," "],
+       [" "," "," "," "," "," "," "],
+       [" "," "," "," "," "," "," "],
+       [" "," "," "," "," "," "," "],
+       [" "," "," "," "," "," "," "],
+	   [" "," "," "," "," "," "," "],
+	   [" "," "," "," "," "," "," "]]) 
 
 def state_game(state_information_instance: TypeStateInformation) -> None:
 	"""
@@ -29,23 +78,9 @@ def state_game(state_information_instance: TypeStateInformation) -> None:
 
 	while state_information_instance.menu_option != "0":
 		os.system("cls" if os.name == "nt" else "clear")
-		print("  1   2   3   4   5   6   7  ")
-		print("                             ")
-		print("|   |   |   |   |   |   |   |")
-		print("+---------------------------+")
-		print("|   |   |   |   |   |   |   |")
-		print("+---------------------------+")
-		print("|   |   |   |   |   |   |   |")
-		print("+---------------------------+")
-		print("|   |   |   |   |   |   |   |")
-		print("+---------------------------+")
-		print("|   |   |   |   |   |   |   |")
-		print("+---------------------------+")
-		print("|   |   |   |   |   |   |   |")
-		print("+---------------------------+")
-		print("|   |   |   |   |   |   |   |")
-		print("+---------------------------+")
-		state_information_instance.menu_option = input("| > Select column: ")
+		board.print_board()
+		if state_information_instance.player_count != 0:
+			state_information_instance.menu_option = input("| > Select column: ")
 		if state_information_instance.menu_option == "1":
 			print("##TODO##")
 		elif state_information_instance.menu_option == "2":
@@ -117,14 +152,14 @@ def state_localplay(state_information_instance):
 		print("+-----------------------+")
 		state_information_instance.menu_option = input("| > Select menu option: ")
 		if state_information_instance.menu_option == "1":
-			state_information.instance.player_count = 1;
-			state_gamesetup(state_information_instance, "local", 1)
+			state_information_instance.player_count = 1
+			state_gamesetup(state_information_instance, "local")
 		elif state_information_instance.menu_option == "2":
-			state_information.instance.player_count = 2;
-			state_gamesetup(state_information_instance, "local", 2)
+			state_information_instance.player_count = 2
+			state_gamesetup(state_information_instance, "local")
 		elif state_information_instance.menu_option == "3":
-			state_information.instance.player_count = 0
-			state_gamesetup(state_information_instance, "local", 0)
+			state_information_instance.player_count = 0
+			state_gamesetup(state_information_instance, "local")
 	state_information_instance.menu_option = "-1"
 
 
@@ -208,7 +243,7 @@ def state_mainmenu(state_information_instance):
 
 
 def main():
-	state_information_instance: TypeStateInformation = TypeStateInformation("-1")
+	state_information_instance: TypeStateInformation = TypeStateInformation("-1", -1)
 	state_mainmenu(state_information_instance)
 
 
