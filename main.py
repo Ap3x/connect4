@@ -87,12 +87,13 @@ def cpu_algorithm_easy(letter: chr) -> None:
 	letter -- character to place
 	"""
 
-	random_choice = random.randint(0,6)
-	for i in range(5,-1,-1):
+	random_choice: int = random.randint(0,6)
+	while True:
 		if check_if_column_full(random_choice) == False:
-			if board.board[i][random_choice] == " ":
-				board.board[i][random_choice] = letter
-				break
+			for i in range(5,-1,-1):
+				if board.board[i][random_choice] == " ":
+					board.board[i][random_choice] = letter
+					return
 		else:
 			random_choice = random.randint(0,6)
 
