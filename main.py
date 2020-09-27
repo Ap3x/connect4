@@ -4,23 +4,21 @@ import pygame
 import os
 import random
 
-
 class TypeStateInformation:
-	"""Contains information necessary between all states """
+	"""Contains information necessary between all states"""
 
 	def __init__(self, menu_option: str, player_count: int) -> None:
 		"""
 		Initializes a typeStateInformation object
 
 		menu_option -- The currently selected menu option
-
 		player_count -- Selected number of human players
 		"""
 
 		self.menu_option: str = menu_option
 		self.player_count: int = player_count
 
-class TypeBoardState:
+class TypeBoard:
 	"""Contains information and functions necessary for board manipulation"""
 
 	def __init__(self, board: [[]]) -> None:
@@ -36,32 +34,36 @@ class TypeBoardState:
 		"""
 		Prints the board object
 		"""
-		print("  1   2   3   4   5   6   7  ")
+
+		print("   1     2     3     4     5     6     7")
 		print("                             ")
 		print("| ",self.board[0][0]," | ",self.board[0][1]," | ",self.board[0][2]," | ",self.board[0][3]," | ",self.board[0][4]," | ",self.board[0][5]," | ",self.board[0][6]," |")
-		print("+------------------------------------------+")
+		print("+-----+-----+-----+-----+-----+-----+-----+")
 		print("| ",self.board[1][0]," | ",self.board[1][1]," | ",self.board[1][2]," | ",self.board[1][3]," | ",self.board[1][4]," | ",self.board[1][5]," | ",self.board[1][6]," |")
-		print("+------------------------------------------+")
+		print("+-----+-----+-----+-----+-----+-----+-----+")
 		print("| ",self.board[2][0]," | ",self.board[2][1]," | ",self.board[2][2]," | ",self.board[2][3]," | ",self.board[2][4]," | ",self.board[2][5]," | ",self.board[2][6]," |")
-		print("+------------------------------------------+")
+		print("+-----+-----+-----+-----+-----+-----+-----+")
 		print("| ",self.board[3][0]," | ",self.board[3][1]," | ",self.board[3][2]," | ",self.board[3][3]," | ",self.board[3][4]," | ",self.board[3][5]," | ",self.board[3][6]," |")
-		print("+------------------------------------------+")
+		print("+-----+-----+-----+-----+-----+-----+-----+")
 		print("| ",self.board[4][0]," | ",self.board[4][1]," | ",self.board[4][2]," | ",self.board[4][3]," | ",self.board[4][4]," | ",self.board[4][5]," | ",self.board[4][6]," |")
-		print("+------------------------------------------+")
+		print("+-----+-----+-----+-----+-----+-----+-----+")
 		print("| ",self.board[5][0]," | ",self.board[5][1]," | ",self.board[5][2]," | ",self.board[5][3]," | ",self.board[5][4]," | ",self.board[5][5]," | ",self.board[5][6]," |")
-		print("+------------------------------------------+")
+		print("+-----+-----+-----+-----+-----+-----+-----+")
 
-board: TypeBoardState = TypeBoardState([[" "," "," "," "," "," "," "],
+board: TypeBoard = TypeBoard([[" "," "," "," "," "," "," "],
        [" "," "," "," "," "," "," "],
        [" "," "," "," "," "," "," "],
        [" "," "," "," "," "," "," "],
        [" "," "," "," "," "," "," "],
-	   [" "," "," "," "," "," "," "]]) 
+	   [" "," "," "," "," "," "," "]])
 
 def check_if_column_full(col: int) -> bool:
 	"""
-	Check selected column is full
+	Check if column is full
+
+	col -- column to check
 	"""
+
 	if board.board[0][col] != " ":
 		return True
 	return False
@@ -70,6 +72,7 @@ def check_if_board_full() -> bool:
 	"""
 	Check if board is full
 	"""
+
 	for i in range(0,6,1):
 		if check_if_column_full(i) == True:
 			continue
@@ -78,19 +81,20 @@ def check_if_board_full() -> bool:
 	return True
 
 def cpu_algorithm_easy(letter: chr) -> None:
-		"""
-		Easy Algorithm for CPU player -- choses column randomly
+	"""
+	Easy Algorithm for CPU player (chooses column randomly)
 
-		random_choice -- random column selection index
-		"""
-		random_choice = random.randint(0,6)
-		for i in range(5,-1,-1):
-			if check_if_column_full(random_choice) == False:
-				if board.board[i][random_choice] == " ":
-					board.board[i][random_choice] = letter
-					break
-			else:
-				random_choice = random.randint(0,6)
+	letter -- character to place
+	"""
+
+	random_choice = random.randint(0,6)
+	for i in range(5,-1,-1):
+		if check_if_column_full(random_choice) == False:
+			if board.board[i][random_choice] == " ":
+				board.board[i][random_choice] = letter
+				break
+		else:
+			random_choice = random.randint(0,6)
 
 class TypePlayer:
 	"""Contains information and functions necessary for the player"""
@@ -100,9 +104,9 @@ class TypePlayer:
 		Initializes a player object
 
 		turn -- reference to turn based function
-
 		letter -- player letter, either 'X' or 'O'
 		"""
+
 		self.turn: callable = turn
 
 max_x: int = 6
@@ -111,9 +115,8 @@ max_y: int = 7
 def check_win() -> bool:
 	"""
 	Check if a player has achieved 4 in a row
-
-	directions -- each adjacent shift in direction
 	"""
+
 	directions: [[]] = [[1,0], [1,-1], [1,1], [0,1]]
 	for i in directions:
 		x_shift: int = i[0]
@@ -133,7 +136,10 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 	Game state
 
 	state_information_instance -- Instance containing state information
+	player1 -- First player (Human/CPU)
+	player2 -- Second player (Human/CPU)
 	"""
+
 	board.board = [[" "," "," "," "," "," "," "],
        [" "," "," "," "," "," "," "],
        [" "," "," "," "," "," "," "],
@@ -144,27 +150,26 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 	while player_flag != -1:
 		os.system("cls" if os.name == "nt" else "clear")
 		board.print_board()
+		print("Player 1: X")
+		print("Player 2: O")
+		input("Press Enter To Continue: ")
 		if check_if_board_full() == True:
 			os.system("cls" if os.name == "nt" else "clear")
-			print("It's a Tie")
+			print("It's a Tie!")
 			break
-		if state_information_instance.player_count == 0:
-			state_information_instance.menu_option = input("Press Enter To Continue: ")
-			if player_flag % 2 == 0:
-				player1.turn('X')
-			else:
-				player2.turn('O')
-			if check_win() == True:
-				os.system("cls" if os.name == "nt" else "clear")
-				print("A Player Has Won")
-				break	
-		elif state_information_instance.player_count == 1:
-			print("##TODO##")
-		elif state_information_instance.player_count == 2:
-			print("##TODO##")
+		if check_win() == True:
+			os.system("cls" if os.name == "nt" else "clear")
+			print("Player ", (player_flag % 2) ," has won!")
+			break
+		if player_flag % 2 == 0:
+			player1.turn('X')
+		else:
+			player2.turn('O')
 		player_flag += 1
 	board.print_board()
-	state_information_instance.menu_option = input("Press Enter To Continue: ")
+	print("Player 1: X")
+	print("Player 2: O")
+	input("Press Enter To Continue: ")
 
 def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_string: str) -> None:
 	"""
@@ -172,7 +177,6 @@ def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_s
 
 	state_information_instance -- Instance containing state information
 	sub_menu_string -- Indicates which submenu text to display in menu ("local"/"network")
-	player_count -- Represents number of players/number of CPU
 	"""
 
 	while state_information_instance.menu_option != "0":
@@ -209,7 +213,7 @@ def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_s
 	state_information_instance.menu_option = "-1"
 
 
-def state_localplay(state_information_instance):
+def state_localplay(state_information_instance: TypeStateInformation):
 	"""
 	Local-play state
 
@@ -241,7 +245,7 @@ def state_localplay(state_information_instance):
 	state_information_instance.menu_option = "-1"
 
 
-def state_networkplay(state_information_instance):
+def state_networkplay(state_information_instance: TypeStateInformation):
 	"""
 	Network-play state
 
@@ -267,7 +271,7 @@ def state_networkplay(state_information_instance):
 	state_information_instance.menu_option = "-1"
 
 
-def state_options(state_information_instance):
+def state_options(state_information_instance: TypeStateInformation):
 	"""
 	Options state
 
@@ -293,7 +297,7 @@ def state_options(state_information_instance):
 	state_information_instance.menu_option = "-1"
 
 
-def state_mainmenu(state_information_instance):
+def state_mainmenu(state_information_instance: TypeStateInformation):
 	"""
 	Main Menu state
 
