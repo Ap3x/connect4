@@ -141,30 +141,30 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 	"""
 
 	board.board = [[" "," "," "," "," "," "," "],
-       [" "," "," "," "," "," "," "],
-       [" "," "," "," "," "," "," "],
-       [" "," "," "," "," "," "," "],
-       [" "," "," "," "," "," "," "],
-	   [" "," "," "," "," "," "," "]]
+	[" "," "," "," "," "," "," "],
+	[" "," "," "," "," "," "," "],
+	[" "," "," "," "," "," "," "],
+	[" "," "," "," "," "," "," "],
+	[" "," "," "," "," "," "," "]]
 	player_flag: int = 0
 	while player_flag != -1:
 		os.system("cls" if os.name == "nt" else "clear")
 		board.print_board()
 		print("Player 1: X")
 		print("Player 2: O")
-		input("Press Enter To Continue: ")
+		if player_flag % 2 == 0:
+			player1.turn('X')
+		else:
+			player2.turn('O')
 		if check_if_board_full() == True:
 			os.system("cls" if os.name == "nt" else "clear")
 			print("It's a Tie!")
 			break
 		if check_win() == True:
 			os.system("cls" if os.name == "nt" else "clear")
-			print("Player ", (player_flag % 2) ," has won!")
+			print("Player ", (player_flag % 2) + 1 ," has won!")
 			break
-		if player_flag % 2 == 0:
-			player1.turn('X')
-		else:
-			player2.turn('O')
+		input("Press Enter To Continue: ")
 		player_flag += 1
 	board.print_board()
 	print("Player 1: X")
