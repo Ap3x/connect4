@@ -5,7 +5,7 @@ import os
 
 
 class TypeStateInformation:
-	"""Contains information necessary between all states"""
+	"""Contains information necessary between all states :)"""
 
 	def __init__(self, menu_option: str) -> None:
 		"""
