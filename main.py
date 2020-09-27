@@ -58,6 +58,25 @@ board: TypeBoardState = TypeBoardState([[" "," "," "," "," "," "," "],
        [" "," "," "," "," "," "," "],
 	   [" "," "," "," "," "," "," "]]) 
 
+def check_if_column_full(col: int) -> bool:
+	"""
+	Check selected column is full
+	"""
+	if board.board[0][col] != " ":
+		return True
+	return False
+
+def check_if_board_full() -> bool:
+	"""
+	Check if board is full
+	"""
+	for i in range(0,6,1):
+		if check_if_column_full(i) == True:
+			continue
+		else:
+			return False
+	return True
+
 def cpu_algorithm_easy(letter: chr) -> None:
 		"""
 		Easy Algorithm for CPU player -- choses column randomly
@@ -66,9 +85,12 @@ def cpu_algorithm_easy(letter: chr) -> None:
 		"""
 		random_choice = random.randint(0,6)
 		for i in range(5,-1,-1):
-			if board.board[i][random_choice] == " ":
-				board.board[i][random_choice] = letter
-				break
+			if check_if_column_full(random_choice) == False:
+				if board.board[i][random_choice] == " ":
+					board.board[i][random_choice] = letter
+					break
+			else:
+				random_choice = random.randint(0,6)
 
 class TypePlayer:
 	"""Contains information and functions necessary for the player"""
@@ -105,7 +127,7 @@ def check_win() -> bool:
 					if string != " " and string == board.board[x+x_shift][y+y_shift] and string == board.board[x+2*x_shift][y+2*y_shift] and string == board.board[last_x][last_y]:
 						return True
 	return False
-		
+
 def state_game(state_information_instance: TypeStateInformation, player1: TypePlayer, player2: TypePlayer) -> None:
 	"""
 	Game state
@@ -122,6 +144,10 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 	while player_flag != -1:
 		os.system("cls" if os.name == "nt" else "clear")
 		board.print_board()
+		if check_if_board_full() == True:
+			os.system("cls" if os.name == "nt" else "clear")
+			print("It's a Tie")
+			break
 		if state_information_instance.player_count == 0:
 			state_information_instance.menu_option = input("Press Enter To Continue: ")
 			if player_flag % 2 == 0:
@@ -129,14 +155,16 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 			else:
 				player2.turn('O')
 			if check_win() == True:
-				print("A Player Won")
-				player_flag = -2	
+				os.system("cls" if os.name == "nt" else "clear")
+				print("A Player Has Won")
+				break	
 		elif state_information_instance.player_count == 1:
 			print("##TODO##")
 		elif state_information_instance.player_count == 2:
 			print("##TODO##")
 		player_flag += 1
-
+	board.print_board()
+	state_information_instance.menu_option = input("Press Enter To Continue: ")
 
 def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_string: str) -> None:
 	"""
