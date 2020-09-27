@@ -112,6 +112,12 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 
 	state_information_instance -- Instance containing state information
 	"""
+	board.board = [[" "," "," "," "," "," "," "],
+       [" "," "," "," "," "," "," "],
+       [" "," "," "," "," "," "," "],
+       [" "," "," "," "," "," "," "],
+       [" "," "," "," "," "," "," "],
+	   [" "," "," "," "," "," "," "]]
 	player_flag: int = 0
 	while player_flag != -1:
 		os.system("cls" if os.name == "nt" else "clear")
@@ -124,7 +130,7 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 				player2.turn('O')
 			if check_win() == True:
 				print("A Player Won")
-				player_flag = -2;	
+				player_flag = -2	
 		elif state_information_instance.player_count == 1:
 			print("##TODO##")
 		elif state_information_instance.player_count == 2:
