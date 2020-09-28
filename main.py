@@ -105,7 +105,6 @@ class TypePlayer:
 		Initializes a player object
 
 		turn -- reference to turn based function
-		letter -- player letter, either 'X' or 'O'
 		"""
 
 		self.turn: callable = turn
