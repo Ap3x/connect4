@@ -164,6 +164,7 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 			player1.turn('X')
 		else:
 			player2.turn('O')
+		input("Press Enter To Continue: ")
 		if check_if_board_full():
 			os.system("cls" if os.name == "nt" else "clear")
 			print("It's a Tie!")
@@ -172,7 +173,6 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 			os.system("cls" if os.name == "nt" else "clear")
 			print("Player ", (player_flag % 2) + 1, " has won!")
 			break
-		input("Press Enter To Continue: ")
 		player_flag += 1
 	board.print_board()
 	print("Player 1: X")
