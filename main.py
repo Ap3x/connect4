@@ -37,7 +37,7 @@ class TypeBoard:
 		Prints the board object
 		"""
 
-		print("   1     2     3     4     5     6     7")
+		print("   0     1     2     3     4     5     6")
 		print("                             ")
 		print("| ", self.board[0][0], " | ", self.board[0][1], " | ", self.board[0][2], " | ", self.board[0][3], " | ", self.board[0][4], " | ", self.board[0][5], " | ", self.board[0][6], " |")
 		print("+-----+-----+-----+-----+-----+-----+-----+")
@@ -100,6 +100,26 @@ def cpu_algorithm_easy(letter: chr) -> None:
 					return
 		else:
 			random_choice = random.randint(0, 6)
+			
+def human_algorithm(letter: chr) -> None:
+	"""
+	Easy Algorithm for CPU player (chooses column randomly)
+
+	letter -- character to place
+	"""
+
+	column_choice: int = 0
+	while True:
+		print("Player ", letter, ", select a column to move: ")
+		try:
+			column_choice = int(input())
+			if not check_if_column_full(column_choice) and column_choice >= 0 and column_choice <= 6:
+				for i in range(5, -1, -1):
+					if board.board[i][column_choice] == " ":
+						board.board[i][column_choice] = letter
+						return
+		except:
+			print("Invalid move")
 
 
 class TypePlayer:
@@ -164,7 +184,7 @@ def state_game(player1: TypePlayer, player2: TypePlayer) -> None:
 			player1.turn('X')
 		else:
 			player2.turn('O')
-		input("Press Enter To Continue: ")
+		input("Press Any Key To Continue...")
 		if check_if_board_full():
 			os.system("cls" if os.name == "nt" else "clear")
 			print("It's a Tie!")
@@ -177,7 +197,7 @@ def state_game(player1: TypePlayer, player2: TypePlayer) -> None:
 	board.print_board()
 	print("Player 1: X")
 	print("Player 2: O")
-	input("Press Enter To Continue: ")
+	input("Press Any Key To Continue...")
 
 
 def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_string: str) -> None:
@@ -216,9 +236,18 @@ def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_s
 		elif state_information_instance.menu_option == "3":
 			print("##TODO##")
 		elif state_information_instance.menu_option == "9":
-			cpu1: TypePlayer = TypePlayer(cpu_algorithm_easy)
-			cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
-			state_game(cpu1, cpu2)
+			if state_information_instance.player_count == 1:
+				human1: TypePlayer = TypePlayer(human_algorithm)
+				cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
+				state_game(human1, cpu2)
+			elif state_information_instance.player_count == 2:
+				human1: TypePlayer = TypePlayer(human_algorithm)
+				human2: TypePlayer = TypePlayer(human_algorithm)
+				state_game(human1, human2)
+			elif state_information_instance.player_count == 0:
+				cpu1: TypePlayer = TypePlayer(cpu_algorithm_easy)
+				cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
+				state_game(cpu1, cpu2)
 	state_information_instance.menu_option = "-1"
 
 
