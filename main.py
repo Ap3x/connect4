@@ -4,6 +4,7 @@ import pygame
 import os
 import random
 
+
 class TypeStateInformation:
 	"""Contains information necessary between all states"""
 
@@ -17,6 +18,7 @@ class TypeStateInformation:
 
 		self.menu_option: str = menu_option
 		self.player_count: int = player_count
+
 
 class TypeBoard:
 	"""Contains information and functions necessary for board manipulation"""
@@ -50,12 +52,14 @@ class TypeBoard:
 		print("| ",self.board[5][0]," | ",self.board[5][1]," | ",self.board[5][2]," | ",self.board[5][3]," | ",self.board[5][4]," | ",self.board[5][5]," | ",self.board[5][6]," |")
 		print("+-----+-----+-----+-----+-----+-----+-----+")
 
+
 board: TypeBoard = TypeBoard([[" "," "," "," "," "," "," "],
-       [" "," "," "," "," "," "," "],
-       [" "," "," "," "," "," "," "],
-       [" "," "," "," "," "," "," "],
-       [" "," "," "," "," "," "," "],
-	   [" "," "," "," "," "," "," "]])
+		[" "," "," "," "," "," "," "],
+		[" "," "," "," "," "," "," "],
+		[" "," "," "," "," "," "," "],
+		[" "," "," "," "," "," "," "],
+		[" "," "," "," "," "," "," "]])
+
 
 def check_if_column_full(col: int) -> bool:
 	"""
@@ -68,17 +72,17 @@ def check_if_column_full(col: int) -> bool:
 		return True
 	return False
 
+
 def check_if_board_full() -> bool:
 	"""
 	Check if board is full
 	"""
 
-	for i in range(0,6,1):
-		if check_if_column_full(i) == True:
-			continue
-		else:
+	for i in range(0, 6, 1):
+		if not check_if_column_full(i):
 			return False
 	return True
+
 
 def cpu_algorithm_easy(letter: chr) -> None:
 	"""
@@ -87,15 +91,16 @@ def cpu_algorithm_easy(letter: chr) -> None:
 	letter -- character to place
 	"""
 
-	random_choice: int = random.randint(0,6)
+	random_choice: int = random.randint(0, 6)
 	while True:
-		if check_if_column_full(random_choice) == False:
-			for i in range(5,-1,-1):
+		if not check_if_column_full(random_choice):
+			for i in range(5, -1, -1):
 				if board.board[i][random_choice] == " ":
 					board.board[i][random_choice] = letter
 					return
 		else:
-			random_choice = random.randint(0,6)
+			random_choice = random.randint(0, 6)
+
 
 class TypePlayer:
 	"""Contains information and functions necessary for the player"""
@@ -109,8 +114,10 @@ class TypePlayer:
 
 		self.turn: callable = turn
 
+
 max_x: int = 6
 max_y: int = 7
+
 
 def check_win() -> bool:
 	"""
@@ -125,11 +132,12 @@ def check_win() -> bool:
 			for y in range(0,max_y,1):
 				last_x: int = x + (3*x_shift)
 				last_y: int = y + (3*y_shift)
-				if 0 <= last_x and last_x < max_x and 0 <= last_y and last_y < max_y:
+				if 0 <= last_x < max_x and 0 <= last_y < max_y:
 					string: str = board.board[x][y]
 					if string != " " and string == board.board[x+x_shift][y+y_shift] and string == board.board[x+2*x_shift][y+2*y_shift] and string == board.board[last_x][last_y]:
 						return True
 	return False
+
 
 def state_game(state_information_instance: TypeStateInformation, player1: TypePlayer, player2: TypePlayer) -> None:
 	"""
@@ -156,13 +164,13 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 			player1.turn('X')
 		else:
 			player2.turn('O')
-		if check_if_board_full() == True:
+		if check_if_board_full():
 			os.system("cls" if os.name == "nt" else "clear")
 			print("It's a Tie!")
 			break
-		if check_win() == True:
+		if check_win():
 			os.system("cls" if os.name == "nt" else "clear")
-			print("Player ", (player_flag % 2) + 1 ," has won!")
+			print("Player ", (player_flag % 2) + 1, " has won!")
 			break
 		input("Press Enter To Continue: ")
 		player_flag += 1
@@ -170,6 +178,7 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 	print("Player 1: X")
 	print("Player 2: O")
 	input("Press Enter To Continue: ")
+
 
 def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_string: str) -> None:
 	"""
