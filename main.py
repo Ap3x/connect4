@@ -100,7 +100,8 @@ def cpu_algorithm_easy(letter: chr) -> None:
 					return
 		else:
 			random_choice = random.randint(0, 6)
-			
+
+
 def human_algorithm(letter: chr) -> None:
 	"""
 	Easy Algorithm for CPU player (chooses column randomly)
