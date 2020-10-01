@@ -139,6 +139,25 @@ def check_win() -> bool:
 	return False
 
 
+def state_review(game_review: [[[]]]) -> None:
+	option: int = -1
+	current_move: int = 0
+	while option != "q":
+		os.system("cls" if os.name == "nt" else "clear")
+		print("---GAME REVIEW---")
+		print("Current move: ", current_move)
+		game_review[current_move].print_board()
+		print("+----------Options----------+")
+		print("| < Previous move           |")
+		print("| > Next move               |")
+		print("| q Quit                    |")
+		print("+---------------------------+")
+		option = input("Please enter an option: ")
+		if option == "<":
+			current_move = current_move - 1
+		elif option == ">":
+			current_move = current_move + 1
+
 def state_game(player1: TypePlayer, player2: TypePlayer) -> None:
 	"""
 	Game state
@@ -154,6 +173,7 @@ def state_game(player1: TypePlayer, player2: TypePlayer) -> None:
 		[" ", " ", " ", " ", " ", " ", " "],
 		[" ", " ", " ", " ", " ", " ", " "],
 		[" ", " ", " ", " ", " ", " ", " "]]
+	game_review = []
 	player_flag: int = 0
 	while player_flag != -1:
 		os.system("cls" if os.name == "nt" else "clear")
@@ -164,6 +184,7 @@ def state_game(player1: TypePlayer, player2: TypePlayer) -> None:
 			player1.turn('X')
 		else:
 			player2.turn('O')
+		game_review.append(TypeBoard(board.board))
 		input("Press Enter To Continue: ")
 		if check_if_board_full():
 			os.system("cls" if os.name == "nt" else "clear")
@@ -178,6 +199,7 @@ def state_game(player1: TypePlayer, player2: TypePlayer) -> None:
 	print("Player 1: X")
 	print("Player 2: O")
 	input("Press Enter To Continue: ")
+	state_review(game_review)
 
 
 def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_string: str) -> None:
