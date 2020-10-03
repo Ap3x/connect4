@@ -31,6 +31,9 @@ class TypeBoard:
 		"""
 
 		self.board: [[]] = board
+		
+	def get_board(self) -> [[]]:
+		return self.board
 
 	def print_board(self) -> None:
 		"""
@@ -145,7 +148,7 @@ def state_review(game_review: [[[]]]) -> None:
 	while option != "q":
 		os.system("cls" if os.name == "nt" else "clear")
 		print("---GAME REVIEW---")
-		print("Current move: ", current_move)
+		print("Current move: ", current_move + 1, "/", len(game_review))
 		game_review[current_move].print_board()
 		print("+----------Options----------+")
 		print("| < Previous move           |")
@@ -153,9 +156,9 @@ def state_review(game_review: [[[]]]) -> None:
 		print("| q Quit                    |")
 		print("+---------------------------+")
 		option = input("Please enter an option: ")
-		if option == "<":
+		if option == "<" and current_move != 0:
 			current_move = current_move - 1
-		elif option == ">":
+		elif option == ">" and current_move != len(game_review) - 1:
 			current_move = current_move + 1
 
 def state_game(player1: TypePlayer, player2: TypePlayer) -> None:
@@ -184,7 +187,7 @@ def state_game(player1: TypePlayer, player2: TypePlayer) -> None:
 			player1.turn('X')
 		else:
 			player2.turn('O')
-		game_review.append(TypeBoard(board.board))
+		game_review.append(TypeBoard(board.get_board()))
 		input("Press Enter To Continue: ")
 		if check_if_board_full():
 			os.system("cls" if os.name == "nt" else "clear")
