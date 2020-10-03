@@ -3,7 +3,7 @@
 
 import c4gui
 import pygame
-from typing import Callable
+from typing import Callable, Tuple
 
 # Establish the entire screen as the primary surface and prepare the clock
 screen: pygame.display = pygame.display.Info()
@@ -51,7 +51,7 @@ def local_menu(from_menu: c4gui.menu) -> None:
 	"""
 
 	# Set up buttons
-	buttons: tuple[tuple[str, Callable], ...] = (
+	buttons: Tuple[Tuple[str, Callable], ...] = (
 		("1-Player", quit_game),
 		("2-Player", quit_game),
 		("Spectate", quit_game),
