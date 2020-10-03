@@ -98,7 +98,7 @@ def cpu_algorithm_easy(board: TypeBoard, letter: chr) -> None:
 			random_choice = random.randint(0, 6)
 
 
-def human_algorithm(letter: chr) -> None:
+def human_algorithm(board: TypeBoard, letter: chr) -> None:
 	"""
 	Algorithm for Human player (allows human input for choice in column)
 
@@ -109,7 +109,7 @@ def human_algorithm(letter: chr) -> None:
 		print("Player ", letter, ", select a column to move: ")
 		try:
 			column_choice = int(input())
-			if not check_if_column_full(column_choice) and 0 <= column_choice <= 6:
+			if not check_if_column_full(board, column_choice) and 0 <= column_choice <= 6:
 				for i in range(5, -1, -1):
 					if board.board[i][column_choice] == " ":
 						board.board[i][column_choice] = letter
@@ -159,7 +159,7 @@ def check_win(board: TypeBoard) -> bool:
 
 
 def state_review(game_review: [[[]]]) -> None:
-  """
+	"""
 	Game review state
 
 	game_review -- list containing history of the board's moves
@@ -207,14 +207,13 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 		print("Player 2: O")
 		if player_flag % 2 == 0:
 			player1.turn(board, 'X')
-  		if state_information_instance.player_count == 0:
-			  input("Press Enter To Continue.")
+			if state_information_instance.player_count == 0:
+				input("Press Enter To Continue.")
 		else:
 			player2.turn(board, 'O')
-      if state_information_instance.player_count != 2:
-			  input("Press Enter To Continue.")
+			if state_information_instance.player_count != 2:
+				input("Press Enter To Continue.")
 		game_review.append(TypeBoard(copy.deepcopy(board.get_board())))
-		input("Press Enter To Continue: ")
 		if check_if_board_full(board):
 			os.system("cls" if os.name == "nt" else "clear")
 			print("It's a Tie!")
@@ -227,8 +226,8 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 	board.print_board()
 	print("Player 1: X")
 	print("Player 2: O")
-	input("Press Enter To Continue: ")
-	state_review(board, game_review)
+	input("Press Enter To Continue.")
+	state_review(game_review)
 
 
 def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_string: str) -> None:
