@@ -41,7 +41,7 @@ class TypeBoard:
 		Prints the board object
 		"""
 
-		print("   1     2     3     4     5     6     7")
+		print("   0     1     2     3     4     5     6")
 		print("                             ")
 		print("| ", self.board[0][0], " | ", self.board[0][1], " | ", self.board[0][2], " | ", self.board[0][3], " | ", self.board[0][4], " | ", self.board[0][5], " | ", self.board[0][6], " |")
 		print("+-----+-----+-----+-----+-----+-----+-----+")
@@ -98,6 +98,28 @@ def cpu_algorithm_easy(board: TypeBoard, letter: chr) -> None:
 			random_choice = random.randint(0, 6)
 
 
+def human_algorithm(letter: chr) -> None:
+	"""
+	Algorithm for Human player (allows human input for choice in column)
+
+	letter -- character to place
+	"""
+
+	while True:
+		print("Player ", letter, ", select a column to move: ")
+		try:
+			column_choice = int(input())
+			if not check_if_column_full(column_choice) and 0 <= column_choice <= 6:
+				for i in range(5, -1, -1):
+					if board.board[i][column_choice] == " ":
+						board.board[i][column_choice] = letter
+						return
+			else:
+				print("Invalid move, please enter a number from 0-6.")
+		except(ValueError, IndexError):
+			print("Invalid move, please enter a number from 0-6.")
+
+
 class TypePlayer:
 	"""Contains information and functions necessary for the player"""
 
@@ -135,7 +157,13 @@ def check_win(board: TypeBoard) -> bool:
 	return False
 
 
-def state_review(board: TypeBoard, game_review: [[[]]]) -> None:
+
+def state_review(game_review: [[[]]]) -> None:
+  """
+	Game review state
+
+	game_review -- list containing history of the board's moves
+	"""
 	option: int = -1
 	current_move: int = 0
 	while option != "q":
@@ -154,7 +182,8 @@ def state_review(board: TypeBoard, game_review: [[[]]]) -> None:
 		elif option == ">" and current_move != len(game_review) - 1:
 			current_move = current_move + 1
 
-def state_game(player1: TypePlayer, player2: TypePlayer) -> None:
+
+def state_game(state_information_instance: TypeStateInformation, player1: TypePlayer, player2: TypePlayer) -> None:
 	"""
 	Game state
 
@@ -178,8 +207,12 @@ def state_game(player1: TypePlayer, player2: TypePlayer) -> None:
 		print("Player 2: O")
 		if player_flag % 2 == 0:
 			player1.turn(board, 'X')
+  		if state_information_instance.player_count == 0:
+			  input("Press Enter To Continue.")
 		else:
 			player2.turn(board, 'O')
+      if state_information_instance.player_count != 2:
+			  input("Press Enter To Continue.")
 		game_review.append(TypeBoard(copy.deepcopy(board.get_board())))
 		input("Press Enter To Continue: ")
 		if check_if_board_full(board):
@@ -234,9 +267,18 @@ def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_s
 		elif state_information_instance.menu_option == "3":
 			print("##TODO##")
 		elif state_information_instance.menu_option == "9":
-			cpu1: TypePlayer = TypePlayer(cpu_algorithm_easy)
-			cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
-			state_game(cpu1, cpu2)
+			if state_information_instance.player_count == 1:
+				human1: TypePlayer = TypePlayer(human_algorithm)
+				cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
+				state_game(state_information_instance, human1, cpu2)
+			elif state_information_instance.player_count == 2:
+				human1: TypePlayer = TypePlayer(human_algorithm)
+				human2: TypePlayer = TypePlayer(human_algorithm)
+				state_game(state_information_instance, human1, human2)
+			elif state_information_instance.player_count == 0:
+				cpu1: TypePlayer = TypePlayer(cpu_algorithm_easy)
+				cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
+				state_game(state_information_instance, cpu1, cpu2)
 	state_information_instance.menu_option = "-1"
 
 
