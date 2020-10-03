@@ -126,7 +126,7 @@ class Menu:
 							break
 					
 					# Check if the mouse clicked the theme button
-					if theme_button.collidepoint(event.pos.x, event.pos.y):
+					if theme_button.collidepoint(event.pos[0], event.pos[1]):
 						self.toggle_theme()
 			
 			# Draw the background, logo, and theme button
