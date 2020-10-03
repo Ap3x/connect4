@@ -9,9 +9,6 @@ This project is developed in Python, utilizing PyGame3, specifically for CSE550:
 ![Connect 4 v0.1](./screenshot.png "Connect 4 v0.1")
 
 ## Features
-* None (move features from To-Do to Features tab once implemented) 
-
-## To-Do
 * Create 0-player game with "0" or "random" CPU difficulty
 	* Inform users of every turn
 	* Alert users of illegal/invalid moves
@@ -19,12 +16,14 @@ This project is developed in Python, utilizing PyGame3, specifically for CSE550:
 	* Can "record" or "step-through" each state or move of the game and "review" a match's entire move sequence
 * Create 1-player game (human v. CPU)
 * Create local 2-player game (human v. human)
+
+## To-Do
 * Create remote 2-player game through remote network (LAN?) play
 * Implement PyGame GUI
 
 ## Download
 * [Latest release (~)](https://github.com/Ap3x/connect4/archive/master.zip) (Stable)
-* [Latest dev build (v0.1)](https://github.com/Ap3x/connect4/archive/develop.zip) (Experimental)
+* [Latest dev build (v0.2)](https://github.com/Ap3x/connect4/archive/develop.zip) (Experimental)
 
 ## Usage
 Once in the source directory, run the following command to execute the program:
