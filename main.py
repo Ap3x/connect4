@@ -157,14 +157,13 @@ def check_win(board: TypeBoard) -> bool:
 	return False
 
 
-
 def state_review(game_review: [[[]]]) -> None:
 	"""
 	Game review state
 
 	game_review -- list containing history of the board's moves
 	"""
-	option: int = -1
+	option: str = "-1"
 	current_move: int = 0
 	while option != "q":
 		os.system("cls" if os.name == "nt" else "clear")
@@ -178,9 +177,9 @@ def state_review(game_review: [[[]]]) -> None:
 		print("+---------------------------+")
 		option = input("Please enter an option: ")
 		if option == "<" and current_move != 0:
-			current_move = current_move - 1
+			current_move -= 1
 		elif option == ">" and current_move != len(game_review) - 1:
-			current_move = current_move + 1
+			current_move += 1
 
 
 def state_game(state_information_instance: TypeStateInformation, player1: TypePlayer, player2: TypePlayer) -> None:
