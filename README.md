@@ -30,7 +30,7 @@ This project is developed in Python, utilizing PyGame3, specifically for CSE550:
 
 ### Windows
 
-## Linux 
+### Linux 
 In order to ensure that you have all the need packages please install the packages as listed below.
 
 ```shell
