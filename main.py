@@ -3,6 +3,7 @@
 import pygame
 import os
 import random
+import copy
 
 
 class TypeStateInformation:
@@ -31,6 +32,9 @@ class TypeBoard:
 		"""
 
 		self.board: [[]] = board
+		
+	def get_board(self) -> [[]]:
+		return self.board
 
 	def print_board(self) -> None:
 		"""
@@ -53,15 +57,7 @@ class TypeBoard:
 		print("+-----+-----+-----+-----+-----+-----+-----+")
 
 
-board: TypeBoard = TypeBoard([[" ", " ", " ", " ", " ", " ", " "],
-	[" ", " ", " ", " ", " ", " ", " "],
-	[" ", " ", " ", " ", " ", " ", " "],
-	[" ", " ", " ", " ", " ", " ", " "],
-	[" ", " ", " ", " ", " ", " ", " "],
-	[" ", " ", " ", " ", " ", " ", " "]])
-
-
-def check_if_column_full(col: int) -> bool:
+def check_if_column_full(board: TypeBoard, col: int) -> bool:
 	"""
 	Check if column is full
 
@@ -73,18 +69,18 @@ def check_if_column_full(col: int) -> bool:
 	return False
 
 
-def check_if_board_full() -> bool:
+def check_if_board_full(board: TypeBoard) -> bool:
 	"""
 	Check if board is full
 	"""
 
 	for i in range(0, 6, 1):
-		if not check_if_column_full(i):
+		if not check_if_column_full(board, i):
 			return False
 	return True
 
 
-def cpu_algorithm_easy(letter: chr) -> None:
+def cpu_algorithm_easy(board: TypeBoard, letter: chr) -> None:
 	"""
 	Easy Algorithm for CPU player (chooses column randomly)
 
@@ -93,7 +89,7 @@ def cpu_algorithm_easy(letter: chr) -> None:
 
 	random_choice: int = random.randint(0, 6)
 	while True:
-		if not check_if_column_full(random_choice):
+		if not check_if_column_full(board, random_choice):
 			for i in range(5, -1, -1):
 				if board.board[i][random_choice] == " ":
 					board.board[i][random_choice] = letter
@@ -102,7 +98,7 @@ def cpu_algorithm_easy(letter: chr) -> None:
 			random_choice = random.randint(0, 6)
 
 
-def human_algorithm(letter: chr) -> None:
+def human_algorithm(board: TypeBoard, letter: chr) -> None:
 	"""
 	Algorithm for Human player (allows human input for choice in column)
 
@@ -113,7 +109,7 @@ def human_algorithm(letter: chr) -> None:
 		print("Player ", letter, ", select a column to move: ")
 		try:
 			column_choice = int(input())
-			if not check_if_column_full(column_choice) and 0 <= column_choice <= 6:
+			if not check_if_column_full(board, column_choice) and 0 <= column_choice <= 6:
 				for i in range(5, -1, -1):
 					if board.board[i][column_choice] == " ":
 						board.board[i][column_choice] = letter
@@ -141,7 +137,7 @@ max_x: int = 6
 max_y: int = 7
 
 
-def check_win() -> bool:
+def check_win(board: TypeBoard) -> bool:
 	"""
 	Check if a player has achieved 4 in a row
 	"""
@@ -161,6 +157,31 @@ def check_win() -> bool:
 	return False
 
 
+def state_review(game_review: [[[]]]) -> None:
+	"""
+	Game review state
+
+	game_review -- list containing history of the board's moves
+	"""
+	option: str = "-1"
+	current_move: int = 0
+	while option != "q":
+		os.system("cls" if os.name == "nt" else "clear")
+		print("---GAME REVIEW---")
+		print("Current move: ", current_move + 1, "/", len(game_review))
+		game_review[current_move].print_board()
+		print("+----------Options----------+")
+		print("| < Previous move           |")
+		print("| > Next move               |")
+		print("| q Quit                    |")
+		print("+---------------------------+")
+		option = input("Please enter an option: ")
+		if option == "<" and current_move != 0:
+			current_move -= 1
+		elif option == ">" and current_move != len(game_review) - 1:
+			current_move += 1
+
+
 def state_game(state_information_instance: TypeStateInformation, player1: TypePlayer, player2: TypePlayer) -> None:
 	"""
 	Game state
@@ -170,12 +191,13 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 	player2 -- Second player (Human/CPU)
 	"""
 
-	board.board = [[" ", " ", " ", " ", " ", " ", " "],
+	board: TypeBoard = TypeBoard([[" ", " ", " ", " ", " ", " ", " "],
 		[" ", " ", " ", " ", " ", " ", " "],
 		[" ", " ", " ", " ", " ", " ", " "],
 		[" ", " ", " ", " ", " ", " ", " "],
 		[" ", " ", " ", " ", " ", " ", " "],
-		[" ", " ", " ", " ", " ", " ", " "]]
+		[" ", " ", " ", " ", " ", " ", " "]])
+	game_review = []
 	player_flag: int = 0
 	while player_flag != -1:
 		os.system("cls" if os.name == "nt" else "clear")
@@ -183,18 +205,19 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 		print("Player 1: X")
 		print("Player 2: O")
 		if player_flag % 2 == 0:
-			player1.turn('X')
+			player1.turn(board, 'X')
 			if state_information_instance.player_count == 0:
 				input("Press Enter To Continue.")
 		else:
-			player2.turn('O')
+			player2.turn(board, 'O')
 			if state_information_instance.player_count != 2:
 				input("Press Enter To Continue.")
-		if check_if_board_full():
+		game_review.append(TypeBoard(copy.deepcopy(board.get_board())))
+		if check_if_board_full(board):
 			os.system("cls" if os.name == "nt" else "clear")
 			print("It's a Tie!")
 			break
-		if check_win():
+		if check_win(board):
 			os.system("cls" if os.name == "nt" else "clear")
 			print("Player ", (player_flag % 2) + 1, " has won!")
 			break
@@ -203,6 +226,7 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 	print("Player 1: X")
 	print("Player 2: O")
 	input("Press Enter To Continue.")
+	state_review(game_review)
 
 
 def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_string: str) -> None:
