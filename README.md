@@ -20,13 +20,27 @@ This project is developed in Python, utilizing PyGame3, specifically for CSE550:
 ## To-Do
 * Create remote 2-player game through remote network (LAN?) play
 * Implement PyGame GUI
+* Add setup instructions for Windows
 
 ## Download
 * [Latest release (~)](https://github.com/Ap3x/connect4/archive/master.zip) (Stable)
 * [Latest dev build (v0.2)](https://github.com/Ap3x/connect4/archive/develop.zip) (Experimental)
 
+## Setup
+
+### Windows
+
+## Linux 
+In order to ensure that you have all the need packages please install the packages as listed below.
+
+```shell
+$ pip install -r requirements.txt
+$ sudo apt install python3-pygame
+```
+
 ## Usage
 Once in the source directory, run the following command to execute the program:
+
 ```
 $ ./main.py
 ```
