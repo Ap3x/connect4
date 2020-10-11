@@ -100,8 +100,9 @@ class Menu:
 			# Handle and remove all events from the pygame queue from the last tick
 			# https://github.com/pygame/pygame/blob/e40d00db1f8015e8f37624f83a0bd334547cd8dc/docs/reST/ref/event.rst
 			for event in pygame.event.get():
-				
-				if event.type == pygame.QUIT:
+
+				pressed = pygame.key.get_pressed()
+				if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and (event.key == pygame.K_ESCAPE or (pressed[pygame.K_LALT] or pressed[pygame.K_RALT]) and event.key == pygame.K_F4):
 					
 					# Gracefully exit when the system sends SIGINT
 					pygame.quit()
