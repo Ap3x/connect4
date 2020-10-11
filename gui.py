@@ -3,7 +3,6 @@
 
 import c4gui
 import pygame
-from typing import Callable, Tuple
 
 # Establish the entire screen as the primary surface and prepare the clock
 screen: pygame.display = pygame.display.Info()
