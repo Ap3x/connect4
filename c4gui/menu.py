@@ -25,7 +25,7 @@ class Menu:
 		self.display_width = display_width
 		self.display_height = display_height
 
-	def generate(self, buttons: Tuple[Tuple, ...], button_width: float, button_height: int, padding: int) -> None:
+	def generate(self, buttons: Tuple[Tuple, ...], button_width: float = -1, button_height: int = 80, padding: int = 20) -> None:
 		"""
 		Generate the button elements for the menu
 		
@@ -34,6 +34,10 @@ class Menu:
 		button_height -- The button height
 		padding -- The space between buttons
 		"""
+
+		# Handle default cases
+		if button_width == -1:
+			button_width = self.display_width / 3
 		
 		# Add each button, starting at the center of both dimensions
 		offset: float = self.display_height / 2
