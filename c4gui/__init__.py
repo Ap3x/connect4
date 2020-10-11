@@ -18,7 +18,7 @@ pygame.display.set_caption("Connect4")
 
 # Declare named tuples
 from collections import namedtuple
-Theme = namedtuple("Theme", "text background button hover logo meta")
+Theme = namedtuple("Theme", "text background button hover logo meta board empty shadow")
 
 # Inject all existing submodules
 __all__ = []
