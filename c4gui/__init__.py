@@ -19,8 +19,11 @@ pygame.display.set_caption("Connect4")
 # Declare named tuples
 from collections import namedtuple
 Theme = namedtuple("Theme", "text background button hover logo meta board empty shadow")
+Players = namedtuple("Players", "p1_name p1_color p2_name p2_color")
+Coordinates = namedtuple("Coordinates", "x y")
 
 # Inject all existing submodules
+import c4gui.styles
 __all__ = []
 for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
 	__all__.append(module_name)
