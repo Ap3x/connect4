@@ -2,21 +2,23 @@
 # -*- coding: utf8 -*-
 
 import c4gui
+import math
 import pygame
 import sys
-from typing import Tuple
+from typing import Tuple, Callable
 
 
 class Game:
 	"""Handles game board rendering and animation."""
 
-	def __init__(self, theme: c4gui.Theme, display_width: int, display_height: int) -> None:
+	def __init__(self, theme: c4gui.Theme, display_width: int, display_height: int, players: c4gui.Players = c4gui.Players(p1_name="Player 1", p1_color=c4gui.styles.COLOR_RED, p2_name="Player 2", p2_color=c4gui.styles.COLOR_YELLOW)) -> None:
 		"""
 		Set up board elements
 
 		theme -- A c4gui styling theme
 		display_width -- The screen display width
 		display_height -- The screen display height
+		players -- The Players object containing names and colors of each user
 		"""
 
 		# Instantiate passed variables
@@ -27,6 +29,7 @@ class Game:
 			[" ", " ", " ", " ", " ", " ", " "],
 			[" ", " ", " ", " ", " ", " ", " "]]
 		self.theme = theme
+		self.players = players
 		self.display_width = display_width
 		self.display_height = display_height
 
@@ -87,6 +90,17 @@ class Game:
 
 		return self.board
 
+	def draw_turn(self, surface: pygame.Surface, p1turn: bool) -> None:
+		"""
+		Draw the text description of whose turn it is
+
+		surface -- The pygame surface to draw on
+		p1turn -- True if it's player 1's turn; False if it's player 2's turn
+		"""
+		name = self.players.p1_name if p1turn else self.players.p2_name
+		color = self.players.p1_color if p1turn else self.players.p2_color
+		surface.blit(c4gui.styles.FONT.render("%s'%s turn" % (name, "" if name[-1] == "s" else "s"), True, color), (0, 0, 100, 100))
+
 	def draw_board(self, surface: pygame.Surface) -> None:
 		"""
 		Draw the board onto a surface
@@ -107,14 +121,22 @@ class Game:
 				if self.board[r][c] == " ":
 
 					# Blank spots get rendered as images through rectangles
-					surface.blit(pygame.transform.scale(self.theme.empty, ((self.radius - 1) * 2, (self.radius - 1) * 2)), ( int(x + c4gui.styles.SPRITE_SCALE * self.scale), int(y + c4gui.styles.SPRITE_SCALE * self.scale)))
+					surface.blit(pygame.transform.scale(self.theme.empty, ((self.radius - 1) * 2, (self.radius - 1) * 2)), (int(x + c4gui.styles.SPRITE_SCALE * self.scale), int(y + c4gui.styles.SPRITE_SCALE * self.scale)))
 
 				else:
 
 					# Filled spots get rendered as circles, which require an offset
 					pygame.draw.circle(surface, self.p1 if self.board[r][c] == "X" else self.p2, (int(x + self.tile_size / 2), int(y + self.tile_size / 2)), self.radius)
 
-	def render(self, surface: pygame.Surface, clock: pygame.time.Clock, p1turn: bool) -> None:
+	def draw_hovering_token(self, surface: pygame.Surface, x_pos: int, color: Tuple[int, int, int]) -> None:
+		"""
+		Draw the token above the game board onto a surface
+
+		surface -- The pygame surface to draw on
+		"""
+		pygame.draw.circle(surface, color, (x_pos, int(self.tile_size / 2)), self.radius)
+
+	def render(self, surface: pygame.Surface, clock: pygame.time.Clock, p1turn: bool, move_callback: Callable) -> None:
 		"""
 		Render all board elements and loop until user interaction
 
@@ -123,8 +145,13 @@ class Game:
 		p1turn -- True if it's player 1's turn; False if it's player 2's turn
 		"""
 
+		# Verify parameters
+		if not move_callback or not isinstance(move_callback, Callable):
+			raise TypeError("invalid move callback")
+
 		# Draw the first blank
 		self.draw_board(surface)
+		self.draw_turn(surface, p1turn)
 		pygame.display.flip()
 
 		# Loop until a user triggers callback
@@ -135,6 +162,7 @@ class Game:
 
 				# Redraw the board
 				self.draw_board(surface)
+				self.draw_turn(surface, p1turn)
 
 				pressed = pygame.key.get_pressed()
 				if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and (event.key == pygame.K_ESCAPE or (pressed[pygame.K_LALT] or pressed[pygame.K_RALT]) and event.key == pygame.K_F4):
@@ -145,14 +173,22 @@ class Game:
 
 				elif event.type == pygame.MOUSEMOTION:
 
-					# Check if the mouse is within any button rectangle for button hover effect
-					pygame.draw.circle(surface, self.p1 if p1turn else self.p2, (event.pos[0], int(self.tile_size / 2)), self.radius)
+					# Draw the x position of the mouse for a token hover effect
+					self.draw_hovering_token(surface, event.pos[0], self.p1 if p1turn else self.p2)
 
 				elif event.type == pygame.MOUSEBUTTONDOWN:
 
-					# Check if the mouse clicked within any button rectangle for callback execution
-					# TODO - handle events here
-					pass
+					# Check if the mouse clicked within a tile relative to the valid list of columns
+					column: int = math.floor((event.pos[0] - self.grid_start_x) / self.tile_size)
+					if column in range(self.cols) and move_callback(self, p1turn, column):
+
+						# The move was legal; switch turns and continue
+						p1turn = not p1turn
+
+					else:
+
+						# The move was illegal; render as normal
+						self.draw_hovering_token(surface, event.pos[0], self.p1 if p1turn else self.p2)
 
 			# Render the whole screen
 			pygame.display.flip()
