@@ -3,7 +3,6 @@
 
 import c4gui
 import pygame
-import sys
 from typing import Tuple, Callable
 
 
@@ -111,14 +110,10 @@ class Menu:
 			# https://github.com/pygame/pygame/blob/e40d00db1f8015e8f37624f83a0bd334547cd8dc/docs/reST/ref/event.rst
 			for event in pygame.event.get():
 
-				pressed = pygame.key.get_pressed()
-				if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and (event.key == pygame.K_ESCAPE or (pressed[pygame.K_LALT] or pressed[pygame.K_RALT]) and event.key == pygame.K_F4):
+				# check for SIGINT
+				c4gui.helpers.check_sigint(event)
 					
-					# Gracefully exit when the system sends SIGINT
-					pygame.quit()
-					sys.exit()
-					
-				elif event.type == pygame.MOUSEMOTION:
+				if event.type == pygame.MOUSEMOTION:
 					
 					# Check if the mouse is within any button rectangle for button hover effect
 					for button in self.buttons:
@@ -144,7 +139,7 @@ class Menu:
 			# Draw the background, logo, and theme button
 			surface.fill(self.theme.background)
 			surface.blit(self.theme.logo, (logo_x, logo_y))
-			surface.blit(pygame.transform.scale(self.theme.meta, (theme_button.width, theme_button.height)), (theme_button.x, theme_button.y))
+			surface.blit(pygame.transform.scale(self.theme.icons.theme, (theme_button.width, theme_button.height)), (theme_button.x, theme_button.y))
 			
 			# Draw all buttons
 			for button in self.buttons:

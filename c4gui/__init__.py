@@ -20,7 +20,8 @@ pygame.display.set_caption("Connect4")
 
 # Declare named tuples
 from collections import namedtuple
-Theme = namedtuple("Theme", "text background button hover logo meta board empty shadow")
+Icons = namedtuple("Icons", "theme nav_first nav_prev nav_nonce nav_next nav_last")
+Theme = namedtuple("Theme", "text background button hover logo icons board empty shadow")
 Players = namedtuple("Players", "p1_name p1_color p2_name p2_color")
 Coordinates = namedtuple("Coordinates", "x y")
 

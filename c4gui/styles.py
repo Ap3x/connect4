@@ -37,13 +37,28 @@ FONT_SMALL = pygame.font.SysFont("Open Sans", 100)
 FONT_LARGE = pygame.font.SysFont("Open Sans", 40)
 
 
+# Icon sets
+ICONS_LIGHT = c4gui.Icons(theme=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "light", "theme.png")),
+					nav_first=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "light", "nav_first.png")),
+					nav_prev=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "light", "nav_prev.png")),
+					nav_nonce=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "light", "nav_nonce.png")),
+					nav_next=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "light", "nav_next.png")),
+					nav_last=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "light", "nav_last.png")))
+
+ICONS_DARK = c4gui.Icons(theme=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "dark", "theme.png")),
+					nav_first=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "dark", "nav_first.png")),
+					nav_prev=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "dark", "nav_prev.png")),
+					nav_nonce=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "dark", "nav_nonce.png")),
+					nav_next=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "dark", "nav_next.png")),
+					nav_last=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "dark", "nav_last.png")))
+
 # Themes
 THEME_LIGHT = c4gui.Theme(text=COLOR_WHITE,
 					background=COLOR_WHITE,
 					button=COLOR_GRAY,
 					hover=COLOR_DISCORD,
 					logo=pygame.image.load(os.path.join(c4gui.GAMEPATH, "logo_light.png")),
-					meta=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "darkmode.png")),
+					icons=ICONS_LIGHT,
 					board=pygame.image.load(os.path.join(c4gui.GAMEPATH, "boards", "blue_light.png")),
 					empty=pygame.image.load(os.path.join(c4gui.GAMEPATH, "boards", "empty", "blue_light.png")),
 					shadow=COLOR_OFFWHITE)
@@ -53,7 +68,7 @@ THEME_DARK = c4gui.Theme(text=COLOR_WHITE,
 					button=COLOR_DISCORD,
 					hover=COLOR_GRAY,
 					logo=pygame.image.load(os.path.join(c4gui.GAMEPATH, "logo_dark.png")),
-					meta=pygame.image.load(os.path.join(c4gui.GAMEPATH, "icons", "lightmode.png")),
+					icons=ICONS_DARK,
 					board=pygame.image.load(os.path.join(c4gui.GAMEPATH, "boards", "blue_dark.png")),
 					empty=pygame.image.load(os.path.join(c4gui.GAMEPATH, "boards", "empty", "blue_dark.png")),
 					shadow=COLOR_OFFBLACK)
