@@ -183,13 +183,15 @@ class Game:
 					if column in range(self.cols) and move_callback(self, p1turn, column):
 
 						# The move was legal; switch turns and continue
+						c4gui.sfx.play("token_drop")
 						p1turn = not p1turn
 
 					else:
 
 						# The move was illegal; render as normal
+						c4gui.sfx.play("invalid")
 						self.draw_hovering_token(surface, event.pos[0], self.p1 if p1turn else self.p2)
 
 			# Render the whole screen
 			pygame.display.flip()
-			clock.tick(200)
+			clock.tick(20)

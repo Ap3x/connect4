@@ -132,11 +132,13 @@ class Menu:
 					# Check if the mouse clicked within any button rectangle for callback execution
 					for button in self.buttons:
 						if button["rect"].collidepoint(event.pos):
+							c4gui.sfx.play("click")
 							button["callback"](self)
 							break
 					
 					# Check if the mouse clicked the theme button
 					if theme_button.collidepoint(event.pos[0], event.pos[1]):
+						c4gui.sfx.play("toggle")
 						self.toggle_theme()
 			
 			# Draw the background, logo, and theme button

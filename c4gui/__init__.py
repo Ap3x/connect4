@@ -12,6 +12,8 @@ GAMEPATH = os.path.join(os.path.dirname(__file__), "../assets")
 
 # Initialize pygame
 import pygame
+pygame.mixer.pre_init(44100, -16, 1, 512)
+pygame.mixer.init()
 pygame.init()
 pygame.display.set_icon(pygame.image.load(os.path.join(GAMEPATH, "favicon.png")))
 pygame.display.set_caption("Connect4")

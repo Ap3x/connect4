@@ -55,4 +55,3 @@ def check_win(board: [[]]) -> bool:
 					if string != " " and string == board[x+x_shift][y+y_shift] and string == board[x+2*x_shift][y+2*y_shift] and string == board[last_x][last_y]:
 						return True
 	return False
-
