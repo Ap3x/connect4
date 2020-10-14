@@ -35,6 +35,7 @@ After finishing the game, each turn may be reviewed by clicking on the navigatio
 * Create local 2-player game (human v. human)
 * Quit the game entirely with Esc or Alt+F4
 * Hear sound effects with button events
+* Switch between light mode and dark mode
 
 ## To-Do
 * Create remote 2-player game through remote network (LAN?) play
