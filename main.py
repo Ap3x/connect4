@@ -83,6 +83,19 @@ def check_if_board_full() -> bool:
 			return False
 	return True
 
+def check_if_board_empty() -> bool:
+	"""
+	Check if board is empty
+	"""
+
+	for y in range(0,6,1):
+		for x in range (0,7,1):
+			if board.board[y][x] != " ":
+				return False
+	return True
+
+max_x: int = 6
+max_y: int = 7
 
 def cpu_algorithm_easy(letter: chr) -> None:
 	"""
@@ -101,6 +114,140 @@ def cpu_algorithm_easy(letter: chr) -> None:
 		else:
 			random_choice = random.randint(0, 6)
 
+def evaluate_board(tmp: TypeBoard, last_played: int) -> int:
+	"""
+	Evaluate board state
+
+	tmp -- evaluation board
+
+	rating -- score based on board evaluation
+
+	last_played -- indicator for which computer last played
+	"""
+	count_good:int = 0
+	count_bad:int = 0
+	rating:int = 0
+	direction: [[]] = [[0,-1],[0,1],[-1,0],[-1,-1],[-1,1],[1,0],[1,-1],[1,1]]
+	for y in range(5,-1,-1):
+		for x in range(0,7,1):
+			if tmp.board[y][x] == 1:
+				for i in direction:
+					y_shift = i[0]
+					x_shift = i[1]
+					if y+y_shift >= 0 and y+y_shift <= 5 and x+x_shift >=0 and x+x_shift <= 6 and tmp.board[y+y_shift][x+x_shift] == 1:
+						count_good += 1
+						if y+2*y_shift >= 0 and y+2*y_shift <= 5 and x+2*x_shift >=0 and x+2*x_shift <= 6 and tmp.board[y+2*y_shift][x+2*x_shift] == 1:
+							count_good += 5
+							if y+3*y_shift >= 0 and y+3*y_shift <= 5 and x+3*x_shift >=0 and x+3*x_shift <= 6 and tmp.board[y+3*y_shift][x+3*x_shift] == 1:
+								count_good += 1500
+							elif last_played == -1 and (y+3*y_shift >= 0 and y+3*y_shift <= 5 and x+3*x_shift >=0 and x+3*x_shift <= 6 and tmp.board[y+3*y_shift][x+3*x_shift] == 0):
+								count_good += 1000
+			if tmp.board[y][x] == -1:
+				for i in direction:
+					y_shift = i[0]
+					x_shift = i[1]
+					if y+y_shift >= 0 and y+y_shift <= 5 and x+x_shift >=0 and x+x_shift <= 6 and tmp.board[y+y_shift][x+x_shift] == -1:
+						count_bad += 1
+						if y+2*y_shift >= 0 and y+2*y_shift <= 5 and x+2*x_shift >=0 and x+2*x_shift <= 6 and tmp.board[y+2*y_shift][x+2*x_shift] == -1:
+							count_bad += 5
+							if y+3*y_shift >= 0 and y+3*y_shift <= 5 and x+3*x_shift >=0 and x+3*x_shift <= 6 and tmp.board[y+3*y_shift][x+3*x_shift] == -1:
+								count_bad += 1500
+							elif last_played == 1 and (y+3*y_shift >= 0 and y+3*y_shift <= 5 and x+3*x_shift >=0 and x+3*x_shift <= 6 and tmp.board[y+3*y_shift][x+3*x_shift] == 0):
+								count_bad += 500
+	rating = count_good - count_bad
+	return rating
+
+def cpu_algorithm_hard(letter: chr) -> None:
+	"""
+	Hard Algorithm for CPU player (chooses column randomly)
+
+	letter -- character to place
+
+	candidate -- new board matrix for candidate moves
+
+	opponent_letter -- the opponents mark; 'X' if player is 'O' and vice versa
+
+	rating -- calculated rating based on how favorable the future board state is to the CPU
+	"""
+	if letter == 'X':
+		opponent_letter = 'O'
+	else:
+		opponent_letter = 'X'
+	candidate: TypeBoard = TypeBoard([[-2,-2,-2,-2,-2,-2,-2],
+	[-2,-2,-2,-2,-2,-2,-2],
+	[-2,-2,-2,-2,-2,-2,-2],
+	[-2,-2,-2,-2,-2,-2,-2],
+	[-2,-2,-2,-2,-2,-2,-2],
+	[-2,-2,-2,-2,-2,-2,-2]]) 
+	if check_if_board_empty():
+		board.board[5][3] = letter
+	else:
+		for x in range(0,7,1):
+			for y in range(5, -1, -1):
+				if board.board[y][x] == " ":
+					candidate.board[y][x] = 0
+					break
+				elif board.board[y][x] == opponent_letter:
+					candidate.board[y][x] = -1
+				elif board.board[y][x] == letter:
+					candidate.board[y][x] = 1
+		max_rating: int = -9999
+		min_rating: int = 9999
+		inter_rating: int
+		rating: int
+		rating1: int
+		sel_y: int = 0
+		sel_x: int = 0
+		opp_y2: int = 0
+		opp_x2: int = 0
+		for a in range(5,-1,-1):
+			for b in range(0,7,1):
+				if candidate.board[a][b] == 0:
+					candidate.board[a][b] = 1
+					rating1 = evaluate_board(candidate,1)
+					if rating1 >= 500:
+						board.board[a][b] = letter
+						print("[%d,%d](%d)" % (a,b,rating1))	
+						return
+					min_rating = 9999
+					for c in range(5,-1,-1):
+						for d in range(0,7,1):
+							if candidate.board[c][d] == 0:
+								candidate.board[c][d] = -1
+								inter_rating = evaluate_board(candidate,-1)
+								if inter_rating < -1000:
+									if board.board[c][d] == " ":
+										print("[%d,%d]->[%d,%d](%d)" % (a,b,c,d,rating1))	
+										board.board[c][d] = letter
+										return
+								for e in range(5,-1,-1):
+									for f in range(0,7,1):
+										if candidate.board[e][f] == 0:
+											candidate.board[e][f] = 1
+											rating = evaluate_board(candidate,1)
+											min_rating = 9999
+											for g in range(5,-1,-1):
+												for h in range(0,7,1):
+													if candidate.board[g][h] == 0:
+														candidate.board[g][h] = -1
+														inter_rating = evaluate_board(candidate,-1)
+														if inter_rating < min_rating:
+															min_rating = inter_rating
+															opp_y2 = g
+															opp_x2 = h
+														candidate.board[g][h] = 0
+											candidate.board[opp_y2][opp_x2] = -1
+											rating = evaluate_board(candidate,-1)
+											#print("[%d,%d]->[%d,%d](%d), [%d,%d]->[%d,%d](%d) " % (a,b,c,d,rating1,e,f,opp_y2,opp_x2,rating))	
+											if rating > max_rating:
+												max_rating = rating
+												sel_y = a
+												sel_x = b
+											candidate.board[e][f] = 0
+											candidate.board[opp_y2][opp_x2] = 0
+								candidate.board[c][d] = 0
+								candidate.board[a][b] = 0					
+		board.board[sel_y][sel_x] = letter
 
 def human_algorithm(letter: chr) -> None:
 	"""
@@ -136,12 +283,7 @@ class TypePlayer:
 
 		self.turn: callable = turn
 
-
-max_x: int = 6
-max_y: int = 7
-
-
-def check_win() -> bool:
+def check_win(state: TypeBoard) -> bool:
 	"""
 	Check if a player has achieved 4 in a row
 	"""
@@ -155,8 +297,8 @@ def check_win() -> bool:
 				last_x: int = x + (3*x_shift)
 				last_y: int = y + (3*y_shift)
 				if 0 <= last_x < max_x and 0 <= last_y < max_y:
-					string: str = board.board[x][y]
-					if string != " " and string == board.board[x+x_shift][y+y_shift] and string == board.board[x+2*x_shift][y+2*y_shift] and string == board.board[last_x][last_y]:
+					string: str = state.board[x][y]
+					if string != " " and string == state.board[x+x_shift][y+y_shift] and string == state.board[x+2*x_shift][y+2*y_shift] and string == state.board[last_x][last_y]:
 						return True
 	return False
 
@@ -194,7 +336,7 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 			os.system("cls" if os.name == "nt" else "clear")
 			print("It's a Tie!")
 			break
-		if check_win():
+		if check_win(board):
 			os.system("cls" if os.name == "nt" else "clear")
 			print("Player ", (player_flag % 2) + 1, " has won!")
 			break
@@ -250,8 +392,8 @@ def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_s
 				human2: TypePlayer = TypePlayer(human_algorithm)
 				state_game(state_information_instance, human1, human2)
 			elif state_information_instance.player_count == 0:
-				cpu1: TypePlayer = TypePlayer(cpu_algorithm_easy)
-				cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
+				cpu1: TypePlayer = TypePlayer(cpu_algorithm_hard)
+				cpu2: TypePlayer = TypePlayer(cpu_algorithm_hard)
 				state_game(state_information_instance, cpu1, cpu2)
 	state_information_instance.menu_option = "-1"
 
