@@ -432,7 +432,7 @@ class Game:
 
 				# Render the whole screen
 				pygame.display.flip()
-				clock.tick(20)
+				clock.tick(c4gui.TICKSPEED)
 
 				# Play a game end sound after the first render
 				if play_sound:
