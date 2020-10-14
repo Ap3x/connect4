@@ -386,6 +386,8 @@ def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_s
 	state_information_instance -- Instance containing state information
 	sub_menu_string -- Indicates which submenu text to display in menu ("local"/"network")
 	"""
+	cpu1: TypePlayer = TypePlayer(cpu_algorithm_easy)
+	cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
 
 	while state_information_instance.menu_option != "0":
 		os.system("cls" if os.name == "nt" else "clear")
