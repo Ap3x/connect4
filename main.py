@@ -346,6 +346,38 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 	print("Player 2: O")
 	input("Press Enter To Continue.")
 
+def state_cpuchoice(state_information_instance: TypeStateInformation, sub_menu_string: str) -> TypePlayer:
+	"""
+	CPU difficulty choice state
+
+	state_information_instance -- Instance containing state information
+	sub_menu_string -- Indicates CPU difficulty to edit
+	"""
+	while state_information_instance.menu_option != "0":
+		os.system("cls" if os.name == "nt" else "clear")
+		print("+-----------------------+")
+		print("|       Connect 4       |")
+		print("+-----------------------+")
+		if sub_menu_string == "2":
+			print("|    CPU 1 Difficulty   |")
+		elif sub_menu_string == "3":
+			print("|    CPU 1 Difficulty   |")
+		print("+-----------------------+")
+		print("|   Difficulty Choice   |")
+		print("+-----------------------+")
+		print("| 1. Easy               |")
+		print("| 2. Hard               |")
+		print("| 0. Back               |")
+		print("+-----------------------+")
+		state_information_instance.menu_option = input("| > Select menu option: ")
+		if state_information_instance.menu_option == "1":
+			cpu: TypePlayer = TypePlayer(cpu_algorithm_easy)
+			return cpu
+		elif state_information_instance.menu_option == "2":
+			cpu: TypePlayer = TypePlayer(cpu_algorithm_hard)
+			return cpu
+	state_information_instance.menu_option = "-1"
+
 
 def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_string: str) -> None:
 	"""
@@ -379,21 +411,21 @@ def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_s
 		if state_information_instance.menu_option == "1":
 			print("##TODO##")
 		elif state_information_instance.menu_option == "2":
-			print("##TODO##")
+			cpu1 = state_cpuchoice(state_information_instance, state_information_instance.menu_option)
 		elif state_information_instance.menu_option == "3":
-			print("##TODO##")
+			cpu2 = state_cpuchoice(state_information_instance, state_information_instance.menu_option)
 		elif state_information_instance.menu_option == "9":
 			if state_information_instance.player_count == 1:
 				human1: TypePlayer = TypePlayer(human_algorithm)
-				cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
+				# cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
 				state_game(state_information_instance, human1, cpu2)
 			elif state_information_instance.player_count == 2:
 				human1: TypePlayer = TypePlayer(human_algorithm)
 				human2: TypePlayer = TypePlayer(human_algorithm)
 				state_game(state_information_instance, human1, human2)
 			elif state_information_instance.player_count == 0:
-				cpu1: TypePlayer = TypePlayer(cpu_algorithm_hard)
-				cpu2: TypePlayer = TypePlayer(cpu_algorithm_hard)
+				# cpu1: TypePlayer = TypePlayer(cpu_algorithm_easy)
+				# cpu2: TypePlayer = TypePlayer(cpu_algorithm_hard)
 				state_game(state_information_instance, cpu1, cpu2)
 	state_information_instance.menu_option = "-1"
 
