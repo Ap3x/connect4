@@ -33,8 +33,6 @@ After finishing the game, each turn may be reviewed by clicking on the navigatio
 	* Can "record" or "step-through" each state or move of the game and "review" a match's entire move sequence
 * Create 1-player game (human v. CPU)
 * Create local 2-player game (human v. human)
-* Quit the game entirely with Esc or Alt+F4
-* Hear sound effects with button events
 
 ## To-Do
 * Create remote 2-player game through remote network (LAN?) play
