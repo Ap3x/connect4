@@ -150,31 +150,29 @@ def player_event(from_game: c4gui.game, p1turn: bool, column: int) -> bool:
     Returns a boolean of the move's legality
     """
 
-    print("%s chose col %d. Board:" % (p1turn, column))
-    board = from_game.get_board()
-    print(board)
-
+    # Grab the board details
+    board = from_game.get_boards()[-1]
     maximum: c4gui.Coordinates = c4utils.get_board_maximums(board)
+
+    # Verify move legality
     if column not in range(maximum.x) or c4utils.check_if_column_full(board, column):
         return False
 
+    # Update the board
     for i in range(maximum.y-1, -1, -1):
         if board[i][column] == " ":
             board[i][column] = "X" if p1turn else "O"
             break
-
     from_game.update_board(board)
-    # TODO - Equivalent of `game_review.append(TypeBoard(copy.deepcopy(board.get_board())))`
 
+    # Check for an end condition
     if c4utils.check_win(board):
-        # TODO - Break for win
-        print("Player 1 %s" % ("wins" if p1turn else "loses"))  # debug
-        screen_mainmenu()
+        # TODO - c4gui.sfx.play("win")
+        from_game.set_winner(c4gui.game.Winner.P1 if p1turn else c4gui.game.Winner.P2)
 
     if c4utils.check_if_board_full(board):
-        # TODO - Break for tie
-        print("Tie")  # debug
-        screen_mainmenu()
+        # TODO - c4gui.sfx.play("tie")
+        from_game.set_winner(c4gui.game.Winner.TIE)
 
     return True
 
@@ -195,7 +193,7 @@ def screen_game(from_menu: c4gui.menu) -> None:
 
     # Render a new game board
     game: c4gui.Game = c4gui.game.Game(from_menu.theme, WIDTH, HEIGHT, players)
-    game.render(DISPLAY, CLOCK, True, player_event)
+    game.render(DISPLAY, CLOCK, True, player_event, screen_mainmenu)
 
 
 # Entrypoint straight into the main menu
