@@ -30,7 +30,8 @@ def callback_do_nothing(from_menu: c4gui.menu.Menu) -> None:
     from_menu -- The menu used to trigger the callback
     """
 
-    pass
+    # TODO - Remove this callback when development is done
+    c4gui.sfx.play("invalid")
 
 
 def screen_mainmenu(from_menu: c4gui.menu.Menu = None) -> None:
@@ -80,7 +81,7 @@ def screen_gamesetup_1p(from_menu: c4gui.menu) -> None:
     menu.generate((
         ("Enable SFX", callback_do_nothing),
         ("CPU Difficulty", callback_do_nothing),
-        ("Start Game", screen_game),
+        ("Start Game", screen_game, (c4gui.game.GameType.SINGLE,)),
         ("Back", screen_localplay)
     ))
     menu.render(DISPLAY, CLOCK)
@@ -97,7 +98,7 @@ def screen_gamesetup_2p(from_menu: c4gui.menu) -> None:
     menu: c4gui.Menu = c4gui.menu.Menu(from_menu.theme, WIDTH, HEIGHT)
     menu.generate((
         ("Enable SFX", callback_do_nothing),
-        ("Start Game", screen_game),
+        ("Start Game", screen_game, (c4gui.game.GameType.DOUBLE,)),
         ("Back", screen_localplay)
     ))
     menu.render(DISPLAY, CLOCK)
@@ -116,7 +117,7 @@ def screen_gamesetup_0p(from_menu: c4gui.menu) -> None:
         ("Enable SFX", callback_do_nothing),
         ("CPU 1 Difficulty", callback_do_nothing),
         ("CPU 2 Difficulty", callback_do_nothing),
-        ("Start Game", screen_game),
+        ("Start Game", screen_game, (c4gui.game.GameType.SPECTATE,)),
         ("Back", screen_localplay)
     ))
     menu.render(DISPLAY, CLOCK)
@@ -175,7 +176,7 @@ def player_event(from_game: c4gui.game, p1turn: bool, column: int) -> bool:
     return True
 
 
-def screen_game(from_menu: c4gui.menu) -> None:
+def screen_game(from_menu: c4gui.menu, game_type: int) -> None:
     """
     Callback to run a game screen
 
@@ -191,7 +192,7 @@ def screen_game(from_menu: c4gui.menu) -> None:
 
     # Play the start sound and render a new game board
     c4gui.sfx.play("start")
-    game: c4gui.Game = c4gui.game.Game(from_menu.theme, WIDTH, HEIGHT, players)
+    game: c4gui.Game = c4gui.game.Game(game_type, from_menu.theme, WIDTH, HEIGHT, players)
     game.render(DISPLAY, CLOCK, True, player_event, screen_mainmenu)
 
 

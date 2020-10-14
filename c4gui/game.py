@@ -5,6 +5,7 @@ import c4gui
 import copy
 import math
 import pygame
+
 from typing import Dict, Tuple, Callable
 
 
@@ -15,10 +16,17 @@ class Winner:
 	TIE = 4
 
 
+class GameType:
+	SPECTATE = 1
+	SINGLE = 2
+	DOUBLE = 3
+	NETWORK = 4
+
+
 class Game:
 	"""Handles game board rendering and animation."""
 
-	def __init__(self, theme: c4gui.Theme, display_width: int, display_height: int, players: c4gui.Players = c4gui.Players(p1_name="Player 1", p1_color=c4gui.styles.COLOR_RED, p2_name="Player 2", p2_color=c4gui.styles.COLOR_YELLOW)) -> None:
+	def __init__(self, game_type: int, theme: c4gui.Theme, display_width: int, display_height: int, players: c4gui.Players = c4gui.Players(p1_name="Player 1", p1_color=c4gui.styles.COLOR_RED, p2_name="Player 2", p2_color=c4gui.styles.COLOR_YELLOW)) -> None:
 		"""
 		Set up board elements
 
@@ -38,11 +46,12 @@ class Game:
 
 		# Instantiate passed variables
 		self.states: list = []
+		self.game_type: int = game_type
 		self.theme: c4gui.Theme = theme
 		self.players: c4gui.Players = players
 		self.display_width: int = display_width
 		self.display_height: int = display_height
-		self.winner: Winner = Winner.NONE
+		self.winner: int = Winner.NONE
 
 		# Calculate dimensions
 		self.rows: int = len(self.boards[-1])
@@ -227,7 +236,7 @@ class Game:
 
 		return rect
 
-	def draw_win_status(self, surface: pygame.Surface, winner: Winner):
+	def draw_win_status(self, surface: pygame.Surface, winner: int):
 		"""
 		Draw over a button (icon) to highlight it
 

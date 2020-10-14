@@ -4,6 +4,7 @@
 import c4gui
 import pygame
 from typing import Tuple, Callable
+from functools import partial
 
 
 class Menu:
@@ -43,7 +44,7 @@ class Menu:
 		for button in buttons:
 
 			# Verify parameters
-			if not button[1] or not isinstance(button[1], Callable):
+			if len(button) < 2 or not button[1] or not isinstance(button[1], Callable):
 				raise TypeError("invalid button callback")
 
 			# Append to the list
@@ -52,7 +53,8 @@ class Menu:
 				"text": self.get_font(button[0]),
 				"rect": pygame.Rect(self.display_width / 2 - button_width / 2, offset, button_width, button_height),
 				"color": self.theme.button,
-				"callback": button[1]
+				"callback": button[1],
+				"args": button[2] if len(button) > 2 else tuple()
 			})
 			offset += (button_height + padding)
 
@@ -128,7 +130,7 @@ class Menu:
 					for button in self.buttons:
 						if button["rect"].collidepoint(event.pos):
 							c4gui.sfx.play("click")
-							button["callback"](self)
+							button["callback"](*((self,) + button["args"]))
 							break
 					
 					# Check if the mouse clicked the theme button
