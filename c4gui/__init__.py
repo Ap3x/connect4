@@ -3,6 +3,7 @@
 import os
 import pkgutil
 import sys
+from collections import namedtuple
 
 # Set up any environment variables
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
@@ -13,7 +14,7 @@ TICKSPEED = 30
 CPU_DELAY = 5
 
 # Initialize pygame
-import pygame
+import pygame  # noqa: E402
 pygame.mixer.pre_init(44100, -16, 1, 512)
 pygame.mixer.init()
 pygame.init()
@@ -21,7 +22,6 @@ pygame.display.set_icon(pygame.image.load(os.path.join(GAMEPATH, "favicon.png"))
 pygame.display.set_caption("Connect4")
 
 # Declare named tuples
-from collections import namedtuple
 Icons = namedtuple("Icons", "theme nav_first nav_prev nav_nonce nav_next nav_last")
 Theme = namedtuple("Theme", "text background button hover logo icons icons_hover board empty shadow")
 Players = namedtuple("Players", "p1_name p1_color p2_name p2_color")
@@ -29,7 +29,7 @@ MoveCallbacks = namedtuple("MoveCallbacks", "human computer network")
 Coordinates = namedtuple("Coordinates", "x y")
 
 # Inject all existing submodules
-import c4gui.styles
+import c4gui.styles  # noqa: E402
 __all__ = []
 for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
 	__all__.append(module_name)

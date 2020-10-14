@@ -23,18 +23,6 @@ class GameType:
 	NETWORK = 4
 
 
-def end_turn(p1turn: bool) -> bool:
-	"""
-	Play the drop sound and switch turns
-
-	p1turn -- True if it's player 1's turn; False if it's player 2's turn
-	"""
-
-	# The move was legal; switch turns and continue
-	c4gui.sfx.play("token_drop")
-	return not p1turn
-
-
 class Game:
 	"""Handles game board rendering and animation."""
 
@@ -66,8 +54,8 @@ class Game:
 		self.winner: int = Winner.NONE
 
 		# Calculate dimensions
-		self.rows: int = len(self.boards[-1])
-		self.cols: int = len(self.boards[-1][0]) if self.rows > 0 else 0
+		self.rows: int = len(self.boards[0])
+		self.cols: int = len(self.boards[0][0]) if self.rows > 0 else 0
 		self.top: int = self.display_height * c4gui.styles.PADDING_TOP
 		self.tile_size: int = 0
 
@@ -92,6 +80,18 @@ class Game:
 		self.grid_start_x: int = self.board_start_x + c4gui.styles.GRID_START_X*self.scale
 		self.grid_start_y: int = self.board_start_y + c4gui.styles.GRID_START_Y*self.scale
 		self.inner_padding: int = int((self.tile_size - self.radius) / 2)
+
+	@staticmethod
+	def end_turn(p1turn: bool) -> bool:
+		"""
+		Play the drop sound and switch turns
+
+		p1turn -- True if it's player 1's turn; False if it's player 2's turn
+		"""
+
+		# The move was legal; switch turns and continue
+		c4gui.sfx.play("token_drop")
+		return not p1turn
 
 	def set_winner(self, winner: Winner) -> None:
 		"""
@@ -299,8 +299,6 @@ class Game:
 			events: list = pygame.event.get()
 			for event in events:
 
-				print(event)
-
 				# Redraw the board
 				self.draw_board(surface)
 				self.draw_turn(surface, p1turn)
@@ -330,7 +328,6 @@ class Game:
 
 							# Check if the mouse clicked within a tile relative to the valid list of columns
 							column: int = math.floor((event.pos[0] - self.grid_start_x) / self.tile_size)
-							legal_move: bool = True
 							if column in range(self.cols) and move_callback.human(self, p1turn, column):
 
 								p1turn = end_turn(p1turn)

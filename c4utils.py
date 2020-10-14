@@ -5,10 +5,16 @@ import c4gui
 import random
 
 
-def get_board_maximums(board: [[]]) -> c4gui.Coordinates:
-	max_y: int = len(board)
-	max_x: int = len(board[0]) if max_y > 0 else 0
-	return c4gui.Coordinates(max_x, max_y)
+def get_board_maximums() -> c4gui.Coordinates:
+	"""
+	Get the maximum board dimensions
+	"""
+
+	return c4gui.Coordinates(7, 6)
+	# Deprecated but may be useful
+	# max_y: int = len(board)
+	# max_x: int = len(board[0]) if max_y > 0 else 0
+	# return c4gui.Coordinates(max_x, max_y)
 
 
 def check_if_column_full(board: [[]], col: int) -> bool:
@@ -66,7 +72,7 @@ def cpu_algorithm_easy(board: [[]], letter: chr) -> None:
 	letter -- character to place
 	"""
 
-	random_choice: int = get_random(0, 6)
+	random_choice: int = random.randint(0, 6)
 	while True:
 		if not check_if_column_full(board, random_choice):
 			for i in range(5, -1, -1):
@@ -74,14 +80,4 @@ def cpu_algorithm_easy(board: [[]], letter: chr) -> None:
 					board[i][random_choice] = letter
 					return
 		else:
-			random_choice = get_random(0, 6)
-
-
-def get_random(min_inclusive, max_exclusive) -> int:
-	"""
-	Grab a random number in a given range
-
-	min_inclusive -- The lowest number, inclusive
-	max_exclusive -- The highest number, exclusive
-	"""
-	return random.randint(min_inclusive, max_exclusive)
+			random_choice = random.randint(0, 6)
