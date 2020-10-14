@@ -361,7 +361,7 @@ def state_cpuchoice(state_information_instance: TypeStateInformation, sub_menu_s
 		if sub_menu_string == "2":
 			print("|    CPU 1 Difficulty   |")
 		elif sub_menu_string == "3":
-			print("|    CPU 1 Difficulty   |")
+			print("|    CPU 2 Difficulty   |")
 		print("+-----------------------+")
 		print("|   Difficulty Choice   |")
 		print("+-----------------------+")
@@ -402,10 +402,10 @@ def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_s
 		print("|       Game Setup      |")
 		print("+-----------------------+")
 		print("| 1. SFX: ON / [OFF]    |")
-		if state_information_instance.player_count < 2:
+		if state_information_instance.player_count < 1:
 			print("| 2. CPU #1 Difficulty: |")
-			if state_information_instance.player_count < 1:
-				print("| 3. CPU #2 Difficulty: |")
+		if state_information_instance.player_count < 2:
+			print("| 3. CPU #2 Difficulty: |")
 		print("| 9. Start game         |")
 		print("| 0. Back               |")
 		print("+-----------------------+")
@@ -419,15 +419,12 @@ def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_s
 		elif state_information_instance.menu_option == "9":
 			if state_information_instance.player_count == 1:
 				human1: TypePlayer = TypePlayer(human_algorithm)
-				# cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
 				state_game(state_information_instance, human1, cpu2)
 			elif state_information_instance.player_count == 2:
 				human1: TypePlayer = TypePlayer(human_algorithm)
 				human2: TypePlayer = TypePlayer(human_algorithm)
 				state_game(state_information_instance, human1, human2)
 			elif state_information_instance.player_count == 0:
-				# cpu1: TypePlayer = TypePlayer(cpu_algorithm_easy)
-				# cpu2: TypePlayer = TypePlayer(cpu_algorithm_hard)
 				state_game(state_information_instance, cpu1, cpu2)
 	state_information_instance.menu_option = "-1"
 
