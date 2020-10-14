@@ -16,6 +16,10 @@ SFX: dict = {
 	"up": os.path.join(sound_path, "up.wav"),
 	"down": os.path.join(sound_path, "down.wav"),
 	"special": os.path.join(sound_path, "special.wav"),
+	"start": os.path.join(sound_path, "start.wav"),
+	"lose": os.path.join(sound_path, "lose.wav"),
+	"tie": os.path.join(sound_path, "tie.wav"),
+	"win": os.path.join(sound_path, "win.wav"),
 }
 
 
