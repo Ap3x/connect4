@@ -42,16 +42,17 @@ def check_win(board: [[]]) -> bool:
 	"""
 
 	maximum: c4gui.Coordinates = get_board_maximums(board)
+
 	directions: [[]] = [[1, 0], [1, -1], [1, 1], [0, 1]]
 	for i in directions:
-		x_shift: int = i[0]
-		y_shift: int = i[1]
-		for x in range(0, maximum.x-1, 1):
-			for y in range(0, maximum.y-1, 1):
-				last_x: int = x + (3*x_shift)
-				last_y: int = y + (3*y_shift)
-				if 0 <= last_x < maximum.x-1 and 0 <= last_y < maximum.y-1:
-					string: str = board[x][y]
-					if string != " " and string == board[x+x_shift][y+y_shift] and string == board[x+2*x_shift][y+2*y_shift] and string == board[last_x][last_y]:
+		y_shift: int = i[0]
+		x_shift: int = i[1]
+		for y in range(maximum.y):
+			for x in range(maximum.x):
+				last_y: int = y + (3 * y_shift)
+				last_x: int = x + (3 * x_shift)
+				if 0 <= last_y < maximum.y and 0 <= last_x < maximum.x:
+					string: str = board[y][x]
+					if string != " " and string == board[y + y_shift][x + x_shift] and string == board[y + 2 * y_shift][x + 2 * x_shift] and string == board[last_y][last_x]:
 						return True
 	return False
