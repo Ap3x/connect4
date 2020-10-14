@@ -15,7 +15,7 @@ Each of the menu options leads to game settings menus, and a game is created whe
 
 ##### Game Screen
 
-Human moves are accomplished with the mouse movements. A token is dropped after a mouse click. Computer opponents automatically move. The game ends either when four of a players tokens line up or when there are no valid moves left on the grid.
+Human moves are accomplished with the mouse movements. A token is dropped after a mouse click. Computer opponents automatically move. The game ends in a "win" when four of a players tokens line up vertically, horizontally, or diagonally, and the game ends in a "tie" when there are no valid moves left on the grid.
 
 ![2](https://imgur.com/XLp0hgE.png "Game Screen")
 
