@@ -23,6 +23,18 @@ class GameType:
 	NETWORK = 4
 
 
+def end_turn(p1turn: bool) -> bool:
+	"""
+	Play the drop sound and switch turns
+
+	p1turn -- True if it's player 1's turn; False if it's player 2's turn
+	"""
+
+	# The move was legal; switch turns and continue
+	c4gui.sfx.play("token_drop")
+	return not p1turn
+
+
 class Game:
 	"""Handles game board rendering and animation."""
 
@@ -257,7 +269,7 @@ class Game:
 		text = c4gui.styles.FONT.render(text, True, color)
 		surface.blit(text, (self.display_width / 2 - text.get_width() / 2, 10))
 
-	def render(self, surface: pygame.Surface, clock: pygame.time.Clock, p1turn: bool, move_callback: Callable, end_callback: Callable) -> None:
+	def render(self, surface: pygame.Surface, clock: pygame.time.Clock, p1turn: bool, move_callback: c4gui.MoveCallbacks, end_callback: Callable) -> None:
 		"""
 		Render all board elements and loop until user interaction
 
@@ -267,8 +279,9 @@ class Game:
 		"""
 
 		# Verify parameters
-		if not move_callback or not isinstance(move_callback, Callable):
-			raise TypeError("invalid move callback")
+		for cb in move_callback:
+			if not cb or not isinstance(cb, Callable):
+				raise TypeError("invalid move callback")
 
 		if not end_callback or not isinstance(end_callback, Callable):
 			raise TypeError("invalid game end callback")
@@ -279,42 +292,83 @@ class Game:
 		pygame.display.flip()
 
 		# Loop until a user triggers callback or the game ends
+		delay: int = c4gui.CPU_DELAY if self.game_type == GameType.SPECTATE else 0
 		while self.winner == Winner.NONE:
 
 			# Handle and remove all events from the pygame queue from the last tick
-			for event in pygame.event.get():
+			events: list = pygame.event.get()
+			for event in events:
+
+				print(event)
 
 				# Redraw the board
 				self.draw_board(surface)
 				self.draw_turn(surface, p1turn)
 
 				# check for SIGINT
-				c4gui.helpers.check_sigint(event)
+				c4gui.check_sigint(event)
 
-				if event.type == pygame.MOUSEMOTION:
+				# Handle natural pauses while still properly rendering the scene
 
-					# Draw the x position of the mouse for a token hover effect
-					self.draw_hovering_token(surface, event.pos[0], self.players.p1_color if p1turn else self.players.p2_color)
+				# TODO - Right now this delays by a number of rendering iterations, but it would be better to use asynch time-based delays
+				if delay > 0:
+					delay -= 1
 
-				elif event.type == pygame.MOUSEBUTTONDOWN:
+				else:
 
-					# Check if the mouse clicked within a tile relative to the valid list of columns
-					column: int = math.floor((event.pos[0] - self.grid_start_x) / self.tile_size)
-					if column in range(self.cols) and move_callback(self, p1turn, column):
+					# TODO - Move these turn events outside of pygame events loop; the only dependent turn event is the user's turn
 
-						# The move was legal; switch turns and continue
-						c4gui.sfx.play("token_drop")
-						p1turn = not p1turn
+					# User's turn
+					if self.game_type == GameType.DOUBLE or p1turn and (self.game_type == GameType.SINGLE or self.game_type == GameType.NETWORK):
 
-					else:
+						if event.type == pygame.MOUSEMOTION:
 
-						# The move was illegal; render as normal
-						c4gui.sfx.play("invalid")
-						self.draw_hovering_token(surface, event.pos[0], self.players.p1_color if p1turn else self.players.p2_color)
+							# Draw the x position of the mouse for a token hover effect
+							self.draw_hovering_token(surface, event.pos[0], self.players.p1_color if p1turn else self.players.p2_color)
+
+						elif event.type == pygame.MOUSEBUTTONDOWN:
+
+							# Check if the mouse clicked within a tile relative to the valid list of columns
+							column: int = math.floor((event.pos[0] - self.grid_start_x) / self.tile_size)
+							legal_move: bool = True
+							if column in range(self.cols) and move_callback.human(self, p1turn, column):
+
+								p1turn = end_turn(p1turn)
+								delay = c4gui.CPU_DELAY
+
+							else:
+
+								# The move was illegal; render as normal
+								c4gui.sfx.play("invalid")
+								self.draw_hovering_token(surface, event.pos[0], self.players.p1_color if p1turn else self.players.p2_color)
+
+					# Computer's turn
+					elif self.game_type == GameType.SPECTATE or self.game_type == GameType.SINGLE and not p1turn:
+						move_callback.computer(self, p1turn)
+						p1turn = end_turn(p1turn)
+						if self.game_type == GameType.SPECTATE:
+							delay = c4gui.CPU_DELAY
+
+						# Force another redraw so the user doesn't have to invoke an event to see changes
+						self.draw_board(surface)
+						self.draw_turn(surface, p1turn)
+
+					# User-over-the-network's turn
+					elif self.game_type == GameType.NETWORK and not p1turn:
+						move_callback.network(self, p1turn)
+						p1turn = end_turn(p1turn)
+
+						# Force another redraw so the user doesn't have to invoke an event to see changes
+						self.draw_board(surface)
+						self.draw_turn(surface, p1turn)
+
+			# If no events happened but one is required to make a move (e.g. computers), force trigger an event
+			if len(events) == 0 and (self.game_type == GameType.SPECTATE or self.game_type == GameType.SINGLE and not p1turn):
+				pygame.event.post(pygame.event.Event(pygame.USEREVENT, {}))
 
 			# Render the whole screen
 			pygame.display.flip()
-			clock.tick(20)
+			clock.tick(c4gui.TICKSPEED)
 
 		# Set up the game over / review state
 		max_board_num = len(self.boards) - 1
@@ -346,7 +400,7 @@ class Game:
 
 					# Handle navigation buttons
 					for button in nav_buttons_pos.keys():
-						if pygame.Rect(nav_buttons_pos[button].x, nav_buttons_pos[button].y, button_dimension, button_dimension).collidepoint(event.pos):
+						if pygame.Rect(nav_buttons_pos[button].x, nav_buttons_pos[button].y, button_dimension, button_dimension).collidepoint(event.pos[0], event.pos[1]):
 
 							# Highlight if hovered over
 							self.draw_highlight_button(surface, button_dimension, button, nav_buttons_pos[button])

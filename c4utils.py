@@ -2,6 +2,7 @@
 # -*- coding: utf8 -*-
 
 import c4gui
+import random
 
 
 def get_board_maximums(board: [[]]) -> c4gui.Coordinates:
@@ -56,3 +57,31 @@ def check_win(board: [[]]) -> bool:
 					if string != " " and string == board[y + y_shift][x + x_shift] and string == board[y + 2 * y_shift][x + 2 * x_shift] and string == board[last_y][last_x]:
 						return True
 	return False
+
+
+def cpu_algorithm_easy(board: [[]], letter: chr) -> None:
+	"""
+	Easy Algorithm for CPU player (chooses column randomly)
+
+	letter -- character to place
+	"""
+
+	random_choice: int = get_random(0, 6)
+	while True:
+		if not check_if_column_full(board, random_choice):
+			for i in range(5, -1, -1):
+				if board[i][random_choice] == " ":
+					board[i][random_choice] = letter
+					return
+		else:
+			random_choice = get_random(0, 6)
+
+
+def get_random(min_inclusive, max_exclusive) -> int:
+	"""
+	Grab a random number in a given range
+
+	min_inclusive -- The lowest number, inclusive
+	max_exclusive -- The highest number, exclusive
+	"""
+	return random.randint(min_inclusive, max_exclusive)

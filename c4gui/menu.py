@@ -4,7 +4,6 @@
 import c4gui
 import pygame
 from typing import Tuple, Callable
-from functools import partial
 
 
 class Menu:
@@ -113,7 +112,7 @@ class Menu:
 			for event in pygame.event.get():
 
 				# check for SIGINT
-				c4gui.helpers.check_sigint(event)
+				c4gui.check_sigint(event)
 					
 				if event.type == pygame.MOUSEMOTION:
 					
@@ -156,4 +155,4 @@ class Menu:
 			
 			# Render the drawing
 			pygame.display.flip()
-			clock.tick(20)
+			clock.tick(c4gui.TICKSPEED)

@@ -34,6 +34,7 @@ def callback_do_nothing(from_menu: c4gui.menu.Menu) -> None:
     c4gui.sfx.play("invalid")
 
 
+# TODO - Options menus need functional buttons/sliders/inputs
 def screen_mainmenu(from_menu: c4gui.menu.Menu = None) -> None:
     """
     Self-runnable or callback to run the main main loop
@@ -140,7 +141,18 @@ def screen_networkplay(from_menu: c4gui.menu) -> None:
     menu.render(DISPLAY, CLOCK)
 
 
-def player_event(from_game: c4gui.game, p1turn: bool, column: int) -> bool:
+def move_end_event(from_game: c4gui.game.Game, board: [[]], p1turn: bool) -> None:
+
+    if c4utils.check_win(board):
+        from_game.set_winner(c4gui.game.Winner.P1 if p1turn else c4gui.game.Winner.P2)
+
+    if c4utils.check_if_board_full(board):
+        from_game.set_winner(c4gui.game.Winner.TIE)
+
+    pygame.event.post(pygame.event.Event(pygame.USEREVENT, {}))
+
+
+def player_event(from_game: c4gui.game.Game, p1turn: bool, column: int) -> bool:
     """
     Callback to handle a player's move
 
@@ -167,13 +179,28 @@ def player_event(from_game: c4gui.game, p1turn: bool, column: int) -> bool:
     from_game.update_board(board)
 
     # Check for an end condition
-    if c4utils.check_win(board):
-        from_game.set_winner(c4gui.game.Winner.P1 if p1turn else c4gui.game.Winner.P2)
-
-    if c4utils.check_if_board_full(board):
-        from_game.set_winner(c4gui.game.Winner.TIE)
+    move_end_event(from_game, board, p1turn)
 
     return True
+
+
+def network_event(from_game: c4gui.game.Game, p1turn: bool) -> None:
+    # TODO - Network events
+    pass
+
+
+def computer_event(from_game: c4gui.game.Game, p1turn: bool) -> None:
+    """
+    Callback to handle a computer's move
+
+    from_menu -- The menu used to trigger the callback
+    p1turn -- True if it's player 1's turn; False if it's player 2's turn
+    """
+
+    board = from_game.get_boards()[-1]
+    c4utils.cpu_algorithm_easy(board, "X" if p1turn else "O")
+    from_game.update_board(board)
+    move_end_event(from_game, board, p1turn)
 
 
 def screen_game(from_menu: c4gui.menu, game_type: int) -> None:
@@ -193,8 +220,9 @@ def screen_game(from_menu: c4gui.menu, game_type: int) -> None:
     # Play the start sound and render a new game board
     c4gui.sfx.play("start")
     game: c4gui.Game = c4gui.game.Game(game_type, from_menu.theme, WIDTH, HEIGHT, players)
-    game.render(DISPLAY, CLOCK, True, player_event, screen_mainmenu)
+    game.render(DISPLAY, CLOCK, True, c4gui.MoveCallbacks(human=player_event, computer=computer_event, network=network_event), screen_mainmenu)
 
 
 # Entrypoint straight into the main menu
-screen_mainmenu()
+if __name__ == "__main__":
+    screen_mainmenu()
