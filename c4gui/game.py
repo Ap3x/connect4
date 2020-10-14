@@ -307,7 +307,7 @@ class Game:
 			pygame.display.flip()
 			clock.tick(20)
 
-		# Game over state; show game review
+		# Set up the game over / review state
 		max_board_num = len(self.boards) - 1
 		current_board_num = max_board_num
 		nav_buttons = (("nav_first", -2),
@@ -317,6 +317,7 @@ class Game:
 						("nav_last", 2))
 		button_dimension = self.get_icon_dimension()
 
+		play_sound: bool = True
 		exit_game: bool = False
 		while not exit_game:
 
@@ -334,11 +335,16 @@ class Game:
 
 				if event.type == pygame.MOUSEMOTION or event.type == pygame.MOUSEBUTTONDOWN:
 
+					# Handle navigation buttons
 					for button in nav_buttons_pos.keys():
 						if pygame.Rect(nav_buttons_pos[button].x, nav_buttons_pos[button].y, button_dimension, button_dimension).collidepoint(event.pos):
+
+							# Highlight if hovered over
 							self.draw_highlight_button(surface, button_dimension, button, nav_buttons_pos[button])
 
 							if event.type == pygame.MOUSEBUTTONDOWN:
+
+								# Change the board number if clicked
 								direction = int(dict(nav_buttons)[button])
 								if direction == 0:
 									continue
@@ -355,14 +361,11 @@ class Game:
 									current_board_num = max_board_num
 									c4gui.sfx.play("special")
 
+					# Check exit button events
 					if exit_button.collidepoint(event.pos[0], event.pos[1]):
-
 						if event.type == pygame.MOUSEMOTION:
-
 							self.draw_exit_button(surface, True)
-
 						elif event.type == pygame.MOUSEBUTTONDOWN:
-
 							end_callback()
 							exit_game = True
 							break
@@ -370,3 +373,12 @@ class Game:
 				# Render the whole screen
 				pygame.display.flip()
 				clock.tick(20)
+
+				# Play a game end sound after the first render
+				if play_sound:
+					if self.winner == Winner.P1 or self.winner == Winner.P2:
+						c4gui.sfx.play("win")
+					elif self.winner == Winner.TIE:
+						c4gui.sfx.play("tie")
+					pygame.time.delay(2500)
+					play_sound = False

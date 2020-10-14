@@ -167,11 +167,9 @@ def player_event(from_game: c4gui.game, p1turn: bool, column: int) -> bool:
 
     # Check for an end condition
     if c4utils.check_win(board):
-        # TODO - c4gui.sfx.play("win")
         from_game.set_winner(c4gui.game.Winner.P1 if p1turn else c4gui.game.Winner.P2)
 
     if c4utils.check_if_board_full(board):
-        # TODO - c4gui.sfx.play("tie")
         from_game.set_winner(c4gui.game.Winner.TIE)
 
     return True
@@ -191,7 +189,8 @@ def screen_game(from_menu: c4gui.menu) -> None:
                                         p2_name="Player 2",
                                         p2_color=c4gui.styles.COLOR_YELLOW)
 
-    # Render a new game board
+    # Play the start sound and render a new game board
+    c4gui.sfx.play("start")
     game: c4gui.Game = c4gui.game.Game(from_menu.theme, WIDTH, HEIGHT, players)
     game.render(DISPLAY, CLOCK, True, player_event, screen_mainmenu)
 
