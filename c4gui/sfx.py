@@ -13,6 +13,9 @@ SFX: dict = {
 	"toggle": os.path.join(sound_path, "toggle.wav"),
 	"token_drop": os.path.join(sound_path, "token_drop"),
 	"invalid": os.path.join(sound_path, "invalid.wav"),
+	"up": os.path.join(sound_path, "up.wav"),
+	"down": os.path.join(sound_path, "down.wav"),
+	"special": os.path.join(sound_path, "special.wav"),
 }
 
 
