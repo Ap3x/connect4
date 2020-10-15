@@ -24,11 +24,12 @@ COLOR_PURPLE = (156, 39, 176)
 COLOR_BROWN = (121, 85, 72)
 COLOR_GRAY = (150, 150, 150)
 COLOR_GREY = COLOR_GRAY
-COLOR_WHITE = (255, 255, 255)
-COLOR_OFFWHITE = (200, 200, 200)
-COLOR_BLACK = (0, 0, 0)
-COLOR_OFFBLACK = (10, 10, 10)
 COLOR_DARK_GRAY = (47, 49, 54)
+COLOR_DARK_GREY = COLOR_DARK_GRAY
+COLOR_WHITE = (255, 255, 255)
+COLOR_OFF_WHITE = (200, 200, 200)
+COLOR_BLACK = (0, 0, 0)
+COLOR_OFF_BLACK = (10, 10, 10)
 
 
 # Fonts
@@ -77,7 +78,7 @@ THEME_LIGHT = c4gui.Theme(text=COLOR_WHITE,
 					icons_hover=ICONS_LIGHT_HOVER,
 					board=pygame.image.load(os.path.join(c4gui.GAMEPATH, "boards", "blue_light.png")),
 					empty=pygame.image.load(os.path.join(c4gui.GAMEPATH, "boards", "empty", "blue_light.png")),
-					shadow=COLOR_OFFWHITE)
+					shadow=COLOR_OFF_WHITE)
 
 THEME_DARK = c4gui.Theme(text=COLOR_WHITE,
 					background=COLOR_BLACK,
@@ -88,7 +89,7 @@ THEME_DARK = c4gui.Theme(text=COLOR_WHITE,
 					icons_hover=ICONS_DARK_HOVER,
 					board=pygame.image.load(os.path.join(c4gui.GAMEPATH, "boards", "blue_dark.png")),
 					empty=pygame.image.load(os.path.join(c4gui.GAMEPATH, "boards", "empty", "blue_dark.png")),
-					shadow=COLOR_OFFBLACK)
+					shadow=COLOR_OFF_BLACK)
 
 
 # Board dimensions
