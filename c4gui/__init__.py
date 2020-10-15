@@ -8,10 +8,12 @@ from collections import namedtuple
 # Set up any environment variables
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 os.environ["SDL_VIDEO_CENTERED"] = "1"
-SCALE_MODIFIER = 1
-GAMEPATH = os.path.join(os.path.dirname(__file__), "../assets")
-TICKSPEED = 30
-CPU_DELAY = 5
+SCALE_MODIFIER: float = 1
+GAMEPATH: str = os.path.join(os.path.dirname(__file__), "../assets")
+TICKSPEED: int = 30
+CPU_DELAY: int = 5
+MAX_ROWS: int = 6
+MAX_COLS: int = 7
 
 # Initialize pygame
 import pygame  # noqa: E402

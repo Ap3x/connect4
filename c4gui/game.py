@@ -54,8 +54,6 @@ class Game:
 		self.winner: int = Winner.NONE
 
 		# Calculate dimensions
-		self.rows: int = len(self.boards[0])
-		self.cols: int = len(self.boards[0][0]) if self.rows > 0 else 0
 		self.top: int = self.display_height * c4gui.styles.PADDING_TOP
 		self.tile_size: int = 0
 
@@ -68,7 +66,7 @@ class Game:
 
 		# The radius is for any circular token and the tile is rectangle of the surrounding padding
 		self.radius: int = int(c4gui.styles.TOKEN_RADIUS * self.scale)
-		self.tile_size: int = int((c4gui.styles.GRID_END_X - c4gui.styles.GRID_START_X) * self.scale / self.cols)
+		self.tile_size: int = int((c4gui.styles.GRID_END_X - c4gui.styles.GRID_START_X) * self.scale / c4gui.MAX_COLS)
 
 		# The board is the entire image
 		self.board_width: int = int(c4gui.styles.BOARD_WIDTH * self.scale)
@@ -156,8 +154,8 @@ class Game:
 		surface.blit(pygame.transform.scale(self.theme.board, (self.board_width, self.board_height)), (self.board_start_x, self.board_start_y))
 
 		# Render each cell
-		for c in range(self.cols):
-			for r in range(self.rows):
+		for c in range(c4gui.MAX_COLS):
+			for r in range(c4gui.MAX_ROWS):
 				x = self.grid_start_x + c * self.tile_size + c4gui.styles.X_STRETCH * c
 				y = self.grid_start_y + r * self.tile_size + c4gui.styles.Y_STRETCH * r
 				if self.boards[board][r][c] == " ":
@@ -328,9 +326,9 @@ class Game:
 
 							# Check if the mouse clicked within a tile relative to the valid list of columns
 							column: int = math.floor((event.pos[0] - self.grid_start_x) / self.tile_size)
-							if column in range(self.cols) and move_callback.human(self, p1turn, column):
+							if column in range(c4gui.MAX_COLS) and move_callback.human(self, p1turn, column):
 
-								p1turn = end_turn(p1turn)
+								p1turn = self.end_turn(p1turn)
 								delay = c4gui.CPU_DELAY
 
 							else:
@@ -342,7 +340,7 @@ class Game:
 					# Computer's turn
 					elif self.game_type == GameType.SPECTATE or self.game_type == GameType.SINGLE and not p1turn:
 						move_callback.computer(self, p1turn)
-						p1turn = end_turn(p1turn)
+						p1turn = self.end_turn(p1turn)
 						if self.game_type == GameType.SPECTATE:
 							delay = c4gui.CPU_DELAY
 
@@ -353,7 +351,7 @@ class Game:
 					# User-over-the-network's turn
 					elif self.game_type == GameType.NETWORK and not p1turn:
 						move_callback.network(self, p1turn)
-						p1turn = end_turn(p1turn)
+						p1turn = self.end_turn(p1turn)
 
 						# Force another redraw so the user doesn't have to invoke an event to see changes
 						self.draw_board(surface)

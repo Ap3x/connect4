@@ -165,14 +165,13 @@ def player_event(from_game: c4gui.game.Game, p1turn: bool, column: int) -> bool:
 
     # Grab the board details
     board = from_game.get_boards()[-1]
-    maximum: c4gui.Coordinates = c4utils.get_board_maximums(board)
 
     # Verify move legality
-    if column not in range(maximum.x) or c4utils.check_if_column_full(board, column):
+    if column not in range(c4gui.MAX_COLS) or c4utils.check_if_column_full(board, column):
         return False
 
     # Update the board
-    for i in range(maximum.y-1, -1, -1):
+    for i in range(c4gui.MAX_ROWS-1, -1, -1):
         if board[i][column] == " ":
             board[i][column] = "X" if p1turn else "O"
             break

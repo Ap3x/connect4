@@ -28,7 +28,7 @@ COLOR_WHITE = (255, 255, 255)
 COLOR_OFFWHITE = (200, 200, 200)
 COLOR_BLACK = (0, 0, 0)
 COLOR_OFFBLACK = (10, 10, 10)
-COLOR_DISCORD = (47, 49, 54)
+COLOR_DARK_GRAY = (47, 49, 54)
 
 
 # Fonts
@@ -71,7 +71,7 @@ ICONS_DARK_HOVER = c4gui.Icons(theme=None,
 THEME_LIGHT = c4gui.Theme(text=COLOR_WHITE,
 					background=COLOR_WHITE,
 					button=COLOR_GRAY,
-					hover=COLOR_DISCORD,
+					hover=COLOR_DARK_GRAY,
 					logo=pygame.image.load(os.path.join(c4gui.GAMEPATH, "logo_light.png")),
 					icons=ICONS_LIGHT,
 					icons_hover=ICONS_LIGHT_HOVER,
@@ -81,7 +81,7 @@ THEME_LIGHT = c4gui.Theme(text=COLOR_WHITE,
 
 THEME_DARK = c4gui.Theme(text=COLOR_WHITE,
 					background=COLOR_BLACK,
-					button=COLOR_DISCORD,
+					button=COLOR_DARK_GRAY,
 					hover=COLOR_GRAY,
 					logo=pygame.image.load(os.path.join(c4gui.GAMEPATH, "logo_dark.png")),
 					icons=ICONS_DARK,
