@@ -1,10 +1,12 @@
 import socket
+import pickle
+import main
 
 
 class Network:
     """Contains functions to connect and send data"""
 
-    def __init__(self):
+    def __init__(self, server_ip: str, port: int):
         """
         Initializes an object for a connection to a computer
 
@@ -16,11 +18,11 @@ class Network:
         id -- The client id
         """
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "192.168.2.11"
-        self.port = 1234
+        self.server = server_ip
+        self.port = port
         self.addr = (self.server, self.port)
-        self.id = self.connect()
-        print(self.id)
+        #self.id = self.connect()
+        #print(self.id)
 
     def connect(self):
         """
@@ -37,11 +39,8 @@ class Network:
         Sends data to the game server
         """
         try:
-            self.client.send(str.encode(data))
-            return self.client.recv(2048).decode()
+            data_stream = pickle.dumps(data)
+            self.client.send(data_stream)
+            return self.client.recv(2048)
         except socket.error as e:
             print(e)
-
-n = Network()
-print(n.send("HELLO"))
-print(n.send("WORKING"))

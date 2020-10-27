@@ -3,12 +3,15 @@
 import pygame
 import os
 import random
+import server
+from network import *
+import time
 
 
 class TypeStateInformation:
 	"""Contains information necessary between all states"""
 
-	def __init__(self, menu_option: str, player_count: int) -> None:
+	def __init__(self, menu_option: str, player_count: int,network_option: int) -> None:
 		"""
 		Initializes a typeStateInformation object
 
@@ -18,6 +21,23 @@ class TypeStateInformation:
 
 		self.menu_option: str = menu_option
 		self.player_count: int = player_count
+		self.network_option: int = network_option
+
+		
+
+class TypeNetworkStateInformation:
+	"""Contains information necessary between network states"""
+
+	def __init__(self, ip_addr: str, port: int) -> None:
+		"""
+		Initializes a typeNetworkStateInformation object
+
+		ip_addr -- IP address to connect to host
+		port -- Port number of server
+		"""
+		self.ip_addr: str = ip_addr	
+		self.port: int = port	
+
 
 
 class TypeBoard:
@@ -204,6 +224,66 @@ def state_game(state_information_instance: TypeStateInformation, player1: TypePl
 	print("Player 2: O")
 	input("Press Enter To Continue.")
 
+def state_game_network(state_network_information_instance: TypeNetworkStateInformation, network_option: int) -> None:
+	"""
+	Game state
+
+	state_network_information_instance -- Instance containing network state information
+	"""
+
+	board.board = [[" ", " ", " ", " ", " ", " ", " "],
+		[" ", " ", " ", " ", " ", " ", " "],
+		[" ", " ", " ", " ", " ", " ", " "],
+		[" ", " ", " ", " ", " ", " ", " "],
+		[" ", " ", " ", " ", " ", " ", " "],
+		[" ", " ", " ", " ", " ", " ", " "]]
+	if network_option == 1:
+			server.port = state_network_information_instance.port
+			os.system("cls" if os.name == "nt" else "clear")
+			server.start_server() # Waits for connection first
+			#n = Network(state_network_information_instance.ip_addr, state_network_information_instance.port)
+			#n.connect()
+
+
+	elif network_option == 2:
+			n = Network(state_network_information_instance.ip_addr, state_network_information_instance.port)
+			n.connect()
+			os.system("cls" if os.name == "nt" else "clear")
+			#board.print_board()
+			n.send("Player 1: X")
+			print("sent info")
+
+	exit()
+	player_flag: int = 0
+	while player_flag != -1:
+		os.system("cls" if os.name == "nt" else "clear")
+
+	# 	if player_flag % 2 == 0:
+	# 		player1.turn('X')
+	# 		if state_information_instance.player_count == 0:
+	# 			input("Press Enter To Continue.")
+	# 	else:
+	# 		player2.turn('O')
+	# 		if state_information_instance.player_count != 2:
+	# 			input("Press Enter To Continue.")
+	# 	if check_if_board_full():
+	# 		os.system("cls" if os.name == "nt" else "clear")
+	# 		print("It's a Tie!")
+	# 		break
+	# 	if check_win():
+	# 		os.system("cls" if os.name == "nt" else "clear")
+	# 		print("Player ", (player_flag % 2) + 1, " has won!")
+	# 		break
+	# 	player_flag += 1
+	# # board.print_board()
+	# # print("Player 1: X")
+	# # print("Player 2: O")
+	# # input("Press Enter To Continue.")
+	# print("it works2")
+	# n.send(board)
+	# n.send("Player 1: X")
+	# n.send("Player 2: O")
+	# print("sent info2")
 
 def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_string: str) -> None:
 	"""
@@ -225,34 +305,49 @@ def state_gamesetup(state_information_instance: TypeStateInformation, sub_menu_s
 		print("+-----------------------+")
 		print("|       Game Setup      |")
 		print("+-----------------------+")
-		print("| 1. SFX: ON / [OFF]    |")
-		if state_information_instance.player_count < 2:
-			print("| 2. CPU #1 Difficulty: |")
-			if state_information_instance.player_count < 1:
-				print("| 3. CPU #2 Difficulty: |")
-		print("| 9. Start game         |")
-		print("| 0. Back               |")
-		print("+-----------------------+")
-		state_information_instance.menu_option = input("| > Select menu option: ")
-		if state_information_instance.menu_option == "1":
-			print("##TODO##")
-		elif state_information_instance.menu_option == "2":
-			print("##TODO##")
-		elif state_information_instance.menu_option == "3":
-			print("##TODO##")
-		elif state_information_instance.menu_option == "9":
-			if state_information_instance.player_count == 1:
-				human1: TypePlayer = TypePlayer(human_algorithm)
-				cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
-				state_game(state_information_instance, human1, cpu2)
-			elif state_information_instance.player_count == 2:
-				human1: TypePlayer = TypePlayer(human_algorithm)
-				human2: TypePlayer = TypePlayer(human_algorithm)
-				state_game(state_information_instance, human1, human2)
-			elif state_information_instance.player_count == 0:
-				cpu1: TypePlayer = TypePlayer(cpu_algorithm_easy)
-				cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
-				state_game(state_information_instance, cpu1, cpu2)
+		if state_information_instance.network_option == 1:
+			state_network_information_instance: TypeNetworkStateInformation = TypeNetworkStateInformation("192.168.1.1", 1234)
+			state_network_information_instance.ip_addr = "192.168.2.11" # TODO This will get the current ip - static for testing purpose
+			state_network_information_instance.port = int(input("| > Enter Host port: "))
+			state_game_network(state_network_information_instance, state_information_instance.network_option)
+		elif state_information_instance.network_option == 2:
+			state_network_information_instance: TypeNetworkStateInformation = TypeNetworkStateInformation("192.168.1.1", 1234)
+			state_network_information_instance.ip_addr = input("| > Enter Host IP address: ")
+			state_network_information_instance.port = int(input("| > Enter Host port: "))
+			state_game_network(state_network_information_instance, state_information_instance.network_option)
+		else:
+			print("| 1. SFX: ON / [OFF]    |")
+			if state_information_instance.player_count < 2:
+				print("| 2. CPU #1 Difficulty: |")
+				if state_information_instance.player_count < 1:
+					print("| 3. CPU #2 Difficulty: |")
+			print("| 9. Start game         |")
+			print("| 0. Back               |")
+			print("+-----------------------+")
+			state_information_instance.menu_option = input("| > Select menu option: ")
+			if state_information_instance.menu_option == "1":
+				print("##TODO##")
+			elif state_information_instance.menu_option == "2":
+				print("##TODO##")
+			elif state_information_instance.menu_option == "3":
+				print("##TODO##")
+			elif state_information_instance.menu_option == "9":
+				if state_information_instance.player_count == 1 and sub_menu_string == "local":
+					human1: TypePlayer = TypePlayer(human_algorithm)
+					cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
+					state_game(state_information_instance, human1, cpu2)
+				# elif state_information_instance.player_count == 1 and sub_menu_string == "network":
+				# 	state_game_network(state_information_instance, 1)
+				# elif state_information_instance.player_count == 1 and sub_menu_string == "network":
+				# 	state_game_network(state_information_instance, 1)
+				elif state_information_instance.player_count == 2:
+					human1: TypePlayer = TypePlayer(human_algorithm)
+					human2: TypePlayer = TypePlayer(human_algorithm)
+					state_game(state_information_instance, human1, human2)
+				elif state_information_instance.player_count == 0:
+					cpu1: TypePlayer = TypePlayer(cpu_algorithm_easy)
+					cpu2: TypePlayer = TypePlayer(cpu_algorithm_easy)
+					state_game(state_information_instance, cpu1, cpu2)
 	state_information_instance.menu_option = "-1"
 
 
@@ -278,12 +373,15 @@ def state_localplay(state_information_instance: TypeStateInformation):
 		state_information_instance.menu_option = input("| > Select menu option: ")
 		if state_information_instance.menu_option == "1":
 			state_information_instance.player_count = 1
+			state_information_instance.network_option = -1
 			state_gamesetup(state_information_instance, "local")
 		elif state_information_instance.menu_option == "2":
 			state_information_instance.player_count = 2
+			state_information_instance.network_option = -1
 			state_gamesetup(state_information_instance, "local")
 		elif state_information_instance.menu_option == "3":
 			state_information_instance.player_count = 0
+			state_information_instance.network_option = -1
 			state_gamesetup(state_information_instance, "local")
 	state_information_instance.menu_option = "-1"
 
@@ -308,9 +406,14 @@ def state_networkplay(state_information_instance: TypeStateInformation):
 		print("+-----------------------+")
 		state_information_instance.menu_option = input("| > Select menu option: ")
 		if state_information_instance.menu_option == "1":
-			print("##TODO##")
+				state_information_instance.player_count = 1
+				state_information_instance.network_option = 1
+				state_gamesetup(state_information_instance, "network")
 		elif state_information_instance.menu_option == "2":
-			print("##TODO##")
+				state_information_instance.player_count = 1
+				state_information_instance.network_option = 2
+				state_gamesetup(state_information_instance, "network")
+				
 	state_information_instance.menu_option = "-1"
 
 
@@ -368,7 +471,7 @@ def state_mainmenu(state_information_instance: TypeStateInformation):
 
 
 def main():
-	state_information_instance: TypeStateInformation = TypeStateInformation("-1", -1)
+	state_information_instance: TypeStateInformation = TypeStateInformation("-1", -1 , -1)
 	state_mainmenu(state_information_instance)
 
 
