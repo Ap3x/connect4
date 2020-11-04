@@ -6,7 +6,7 @@ import os
 import pygame
 import random
 
-sound_path = os.path.join(c4gui.GAMEPATH, "sfx")
+sound_path = os.path.join(c4gui.ASSET_PATH, "sfx")
 
 SFX: dict = {
 	"click": os.path.join(sound_path, "click.wav"),
@@ -43,6 +43,10 @@ def play(sound: str, loops: int = 0) -> None:
 	loops -- The number of times to loop the sound; defaults to 0
 	"""
 	global SFX
+
+	# Ignore the call if the user has sounds disabled
+	if not c4gui.config.get("Global", "sfx_enabled", bool):
+		return
 
 	# Check if the sound is loadable
 	if sound in SFX.keys():

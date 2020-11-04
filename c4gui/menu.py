@@ -69,25 +69,25 @@ class Menu:
 	def set_theme(self, theme: c4gui.Theme) -> None:
 		"""
 		Set the menu theme
-		
-		theme - theme -- A c4gui styling theme
+
+		theme -- A c4gui styling theme
 		"""
-		
+
 		self.theme = theme
-	
+
 	def toggle_theme(self) -> None:
 		"""Toggle between LIGHT and DARK themes"""
-		
+
 		# Toggle the theme
 		if self.theme == c4gui.styles.THEME_LIGHT:
 			self.set_theme(c4gui.styles.THEME_DARK)
 		else:
 			self.set_theme(c4gui.styles.THEME_LIGHT)
-		
+
 		# Adjust button and font colors
 		for button in self.buttons:
 			button["text"] = self.get_font(button["data"])
-			button["color"] = self.theme.button 
+			button["color"] = self.theme.button
 
 	def render(self, surface: pygame.Surface, clock: pygame.time.Clock) -> None:
 		"""

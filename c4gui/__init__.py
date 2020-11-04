@@ -9,7 +9,8 @@ from collections import namedtuple
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 os.environ["SDL_VIDEO_CENTERED"] = "1"
 SCALE_MODIFIER: float = 1
-GAMEPATH: str = os.path.join(os.path.dirname(__file__), "../assets")
+ORIGIN_PATH: str = os.path.join(os.path.dirname(__file__), "../")
+ASSET_PATH: str = os.path.join(ORIGIN_PATH, "assets")
 TICKSPEED: int = 30
 CPU_DELAY: int = 5
 MAX_ROWS: int = 6
@@ -20,7 +21,7 @@ import pygame  # noqa: E402
 pygame.mixer.pre_init(44100, -16, 1, 512)
 pygame.mixer.init()
 pygame.init()
-pygame.display.set_icon(pygame.image.load(os.path.join(GAMEPATH, "favicon.png")))
+pygame.display.set_icon(pygame.image.load(os.path.join(ASSET_PATH, "favicon.png")))
 pygame.display.set_caption("Connect4")
 
 # Declare named tuples
@@ -31,7 +32,9 @@ MoveCallbacks = namedtuple("MoveCallbacks", "human computer network")
 Coordinates = namedtuple("Coordinates", "x y")
 
 # Inject all existing submodules
+import c4gui.config  # noqa: E402
 import c4gui.styles  # noqa: E402
+c4gui.config.init()
 __all__ = []
 for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
 	__all__.append(module_name)

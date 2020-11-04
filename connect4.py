@@ -142,6 +142,13 @@ def screen_network_play(from_menu: c4gui.menu) -> None:
 
 
 def move_end_event(from_game: c4gui.game.Game, board: [[]], p1turn: bool) -> None:
+    """
+    Callback event for the end of each player's turn
+
+    from_menu -- The menu used to trigger the callback
+    board -- The board state
+    p1turn -- True if it's player 1's turn; False if it's player 2's turn
+    """
 
     if c4utils.check_win(board):
         from_game.set_winner(c4gui.game.Winner.P1 if p1turn else c4gui.game.Winner.P2)
@@ -211,10 +218,10 @@ def screen_game(from_menu: c4gui.menu, game_type: int) -> None:
 
     # Establish player parameters
     # TODO - Figure out where the user can input these
-    players: c4gui.Players = c4gui.Players(p1_name="Player 1",
-                                        p1_color=c4gui.styles.COLOR_RED,
-                                        p2_name="Player 2",
-                                        p2_color=c4gui.styles.COLOR_YELLOW)
+    players: c4gui.Players = c4gui.Players(p1_name=c4gui.config.get("Player1", "name", str),
+                                        p1_color=c4gui.config.get("Player1", "color", tuple),
+                                        p2_name=c4gui.config.get("Player2", "name", str),
+                                        p2_color=c4gui.config.get("Player2", "color", tuple))
 
     # Play the start sound and render a new game board
     c4gui.sfx.play("start")
