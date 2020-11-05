@@ -47,7 +47,7 @@ def get(section: str, setting: str, expect: type = str) -> any:
 	expect -- an optional type cast
 	"""
 
-	if section_exists(section) and setting_exists(setting):
+	if section_exists(section) and setting_exists(setting, section):
 		try:
 			if expect == bool:
 				return config.getboolean(section, setting)
@@ -108,13 +108,24 @@ def init() -> None:
 				"theme": "THEME_LIGHT",
 				"sfx_enabled": True
 			},
-			"Player1": {
-				"name": "Player 1",
+			"Player": {
+				"name": "Player",
 				"color": c4gui.styles.COLOR_RED
 			},
-			"Player2": {
-				"name": "Player 2",
-				"color": c4gui.styles.COLOR_YELLOW
+			"Computer0": {
+				"name": "CPU",
+				"color": c4gui.styles.COLOR_YELLOW,
+				"difficulty": 5
+			},
+			"Computer1": {
+				"name": "CPU 1",
+				"color": c4gui.styles.COLOR_RED,
+				"difficulty": 5
+			},
+			"Computer2": {
+				"name": "CPU 2",
+				"color": c4gui.styles.COLOR_YELLOW,
+				"difficulty": 5
 			},
 			"Network": {
 				"host_ip": "",
