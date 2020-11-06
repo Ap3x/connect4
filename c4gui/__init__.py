@@ -26,20 +26,18 @@ pygame.display.set_caption("Connect4")
 
 # Declare named tuples
 Icons = namedtuple("Icons", "theme nav_first nav_prev nav_nonce nav_next nav_last")
-Theme = namedtuple("Theme", "text background button hover logo icons icons_hover board empty shadow")
+Theme = namedtuple("Theme", "text background button hover logo icons icons_hover board empty shadow gui_ext")
 Players = namedtuple("Players", "p1_name p1_color p2_name p2_color")
 MoveCallbacks = namedtuple("MoveCallbacks", "human computer network")
 Coordinates = namedtuple("Coordinates", "x y")
 
-# Inject all existing submodules
+# Inject all submodules
 import c4gui.config  # noqa: E402
 import c4gui.styles  # noqa: E402
+import c4gui.game  # noqa: E402
+import c4gui.menu  # noqa: E402
+import c4gui.sfx  # noqa: E402
 c4gui.config.init()
-__all__ = []
-for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
-	__all__.append(module_name)
-	_module = loader.find_module(module_name).load_module(module_name)
-	globals()[module_name] = _module
 
 # Find the scaling factor since Windows devices can be zoomed
 if sys.platform == "win32":
@@ -50,6 +48,17 @@ if sys.platform == "win32":
 		# ctypes.windll.user32.SetProcessDPIAware()
 	# except AttributeError:
 		# pass
+
+
+# Set global constants
+class Mouse:
+	LEFT = 1
+	MIDDLE = 2
+	RIGHT = 3
+	SCROLL_UP = 4
+	SCROLL_DOWN = 5
+	SIDE_DOWN = 6
+	SIDE_UP = 7
 
 
 # Interrupt handler

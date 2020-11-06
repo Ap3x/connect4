@@ -78,7 +78,8 @@ THEME_LIGHT = c4gui.Theme(text=COLOR_WHITE,
 						  icons_hover=ICONS_LIGHT_HOVER,
 						  board=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "boards", "blue_light.png")),
 						  empty=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "boards", "empty", "blue_light.png")),
-						  shadow=COLOR_OFF_WHITE)
+						  shadow=COLOR_OFF_WHITE,
+						  gui_ext=os.path.join(c4gui.ASSET_PATH, "themes", "light.json"))
 
 THEME_DARK = c4gui.Theme(text=COLOR_WHITE,
 						 background=COLOR_BLACK,
@@ -89,7 +90,8 @@ THEME_DARK = c4gui.Theme(text=COLOR_WHITE,
 						 icons_hover=ICONS_DARK_HOVER,
 						 board=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "boards", "blue_dark.png")),
 						 empty=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "boards", "empty", "blue_dark.png")),
-						 shadow=COLOR_OFF_BLACK)
+						 shadow=COLOR_OFF_BLACK,
+						 gui_ext=os.path.join(c4gui.ASSET_PATH, "themes", "dark.json"))
 
 
 # Theme mappings for configuration storage

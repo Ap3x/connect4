@@ -13,138 +13,21 @@ DISPLAY: pygame.display = pygame.display.set_mode((WIDTH, HEIGHT), pygame.NOFRAM
 CLOCK: pygame.time.Clock = pygame.time.Clock()
 
 
-def callback_quit_game(from_menu: c4gui.menu.Menu) -> None:
+def screen_menu(start_at: int = c4gui.menu.SubMenu.MAIN) -> None:
     """
-    Callback to trigger a QUIT event
+    Self-runnable or callback to run the menu loops
 
-    from_menu -- The menu used to trigger the callback
-    """
-
-    pygame.event.post(pygame.event.Event(pygame.QUIT, {}))
-
-
-def callback_do_nothing(from_menu: c4gui.menu.Menu) -> None:
-    """
-    Callback to not trigger anything
-
-    from_menu -- The menu used to trigger the callback
+    start_at -- The optional submenu to start at
     """
 
-    # TODO - Remove this callback when development is done
-    c4gui.sfx.play("invalid")
-
-
-# TODO - Options menus need functional buttons/sliders/inputs
-def screen_main_menu(from_menu: c4gui.menu.Menu = None) -> None:
-    """
-    Self-runnable or callback to run the main main loop
-
-    from_menu -- The menu used to trigger the callback
-    """
-
-    # Make a new Menu and (re-)render all objects
-    menu = c4gui.menu.Menu(c4gui.styles.THEME_LIGHT if from_menu is None else from_menu.theme, WIDTH, HEIGHT)
-    menu.generate((
-        ("Local Game", screen_local_play),
-        ("Network Game", screen_network_play),
-        ("Quit", callback_quit_game)
-    ))
-    menu.render(DISPLAY, CLOCK)
-
-
-def screen_local_play(from_menu: c4gui.menu) -> None:
-    """
-    Callback to run the "Local Game" menu
-
-    from_menu -- The menu used to trigger the callback
-    """
-
-    # Make a new Menu and (re-)render all objects
-    menu: c4gui.Menu = c4gui.menu.Menu(from_menu.theme, WIDTH, HEIGHT)
-    menu.generate((
-        ("1-Player", screen_game_setup_1p),
-        ("2-Player", screen_game_setup_2p),
-        ("Spectate", screen_game_setup_0p),
-        ("Back", screen_main_menu)
-    ))
-    menu.render(DISPLAY, CLOCK)
-
-
-def screen_game_setup_1p(from_menu: c4gui.menu) -> None:
-    """
-    Callback to run the "Game Setup" menu
-
-    from_menu -- The menu used to trigger the callback
-    """
-
-    # Make a new Menu and (re-)render all objects
-    menu: c4gui.Menu = c4gui.menu.Menu(from_menu.theme, WIDTH, HEIGHT)
-    menu.generate((
-        ("Enable SFX", callback_do_nothing),
-        ("CPU Difficulty", callback_do_nothing),
-        ("Start Game", screen_game, (c4gui.game.GameType.SINGLE,)),
-        ("Back", screen_local_play)
-    ))
-    menu.render(DISPLAY, CLOCK)
-
-
-def screen_game_setup_2p(from_menu: c4gui.menu) -> None:
-    """
-    Callback to run the "Game Setup" menu
-
-    from_menu -- The menu used to trigger the callback
-    """
-
-    # Make a new Menu and (re-)render all objects
-    menu: c4gui.Menu = c4gui.menu.Menu(from_menu.theme, WIDTH, HEIGHT)
-    menu.generate((
-        ("Enable SFX", callback_do_nothing),
-        ("Start Game", screen_game, (c4gui.game.GameType.DOUBLE,)),
-        ("Back", screen_local_play)
-    ))
-    menu.render(DISPLAY, CLOCK)
-
-
-def screen_game_setup_0p(from_menu: c4gui.menu) -> None:
-    """
-    Callback to run the "Game Setup" menu
-
-    from_menu -- The menu used to trigger the callback
-    """
-
-    # Make a new Menu and (re-)render all objects
-    menu: c4gui.Menu = c4gui.menu.Menu(from_menu.theme, WIDTH, HEIGHT)
-    menu.generate((
-        ("Enable SFX", callback_do_nothing),
-        ("CPU 1 Difficulty", callback_do_nothing),
-        ("CPU 2 Difficulty", callback_do_nothing),
-        ("Start Game", screen_game, (c4gui.game.GameType.SPECTATE,)),
-        ("Back", screen_local_play)
-    ))
-    menu.render(DISPLAY, CLOCK)
-
-
-def screen_network_play(from_menu: c4gui.menu) -> None:
-    """
-    Callback to run the "Network Game" menu
-
-    from_menu -- The menu used to trigger the callback
-    """
-
-    # Make a new Menu and (re-)render all objects
-    menu: c4gui.Menu = c4gui.menu.Menu(from_menu.theme, WIDTH, HEIGHT)
-    menu.generate((
-        ("Host Game", callback_do_nothing),
-        ("Join Game", callback_do_nothing),
-        ("Back", screen_main_menu)
-    ))
+    # Make a new Menu and render all objects
+    menu = c4gui.menu.Menu(c4gui.config.get("Global", "theme", c4gui.Theme), WIDTH, HEIGHT, start_at, screen_game)
     menu.render(DISPLAY, CLOCK)
 
 
 def move_end_event(from_game: c4gui.game.Game, board: [[]], p1turn: bool) -> None:
     """
     Callback event for the end of each player's turn
-
     from_menu -- The menu used to trigger the callback
     board -- The board state
     p1turn -- True if it's player 1's turn; False if it's player 2's turn
@@ -156,7 +39,7 @@ def move_end_event(from_game: c4gui.game.Game, board: [[]], p1turn: bool) -> Non
     if c4utils.check_if_board_full(board):
         from_game.set_winner(c4gui.game.Winner.TIE)
 
-    pygame.event.post(pygame.event.Event(pygame.USEREVENT, {}))
+    pygame.event.post(pygame.event.Event(pygame.USEREVENT, {"user_type": "GAME_END"}))
 
 
 def player_event(from_game: c4gui.game.Game, p1turn: bool, column: int) -> bool:
@@ -216,19 +99,12 @@ def screen_game(from_menu: c4gui.menu, game_type: int) -> None:
     from_menu -- The menu used to trigger the callback
     """
 
-    # Establish player parameters
-    # TODO - Figure out where the user can input these
-    players: c4gui.Players = c4gui.Players(p1_name=c4gui.config.get("Player1", "name", str),
-                                        p1_color=c4gui.config.get("Player1", "color", tuple),
-                                        p2_name=c4gui.config.get("Player2", "name", str),
-                                        p2_color=c4gui.config.get("Player2", "color", tuple))
-
     # Play the start sound and render a new game board
     c4gui.sfx.play("start")
-    game: c4gui.Game = c4gui.game.Game(game_type, from_menu.theme, WIDTH, HEIGHT, players)
-    game.render(DISPLAY, CLOCK, True, c4gui.MoveCallbacks(human=player_event, computer=computer_event, network=network_event), screen_main_menu)
+    game: c4gui.Game = c4gui.game.Game(game_type, from_menu.theme, WIDTH, HEIGHT)
+    game.render(DISPLAY, CLOCK, True, c4gui.MoveCallbacks(human=player_event, computer=computer_event, network=network_event), screen_menu)
 
 
 # Entrypoint straight into the main menu
 if __name__ == "__main__":
-    screen_main_menu()
+    screen_menu()
