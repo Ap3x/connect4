@@ -32,17 +32,19 @@ def callback_do_nothing() -> None:
 class Menu:
 	"""Handles menu creation, animation, and alteration."""
 
-	def __init__(self, theme: c4gui.Theme, display_width: int, display_height: int, submenu: int, game_callback: Callable) -> None:
+	def __init__(self, display_width: int, display_height: int, submenu: int, game_callback: Callable) -> None:
 		"""
 		Set up menu elements
 		
-		theme -- A c4gui styling theme
 		display_width -- The screen display width
 		display_height -- The screen display height
+		submenu -- The specific menu to render on initialization
+		game_callback -- The callable for a game start event
 		"""
 		
 		# Instantiate passed variables
-		self.theme = theme
+		self.theme = c4gui.config.get("Global", "theme", c4gui.Theme)
+		self.sound = c4gui.config.get("Global", "sfx_enabled", bool)
 		self.display_width = display_width
 		self.display_height = display_height
 		self.submenu = submenu
@@ -76,6 +78,13 @@ class Menu:
 		# Switch cases for all possible menus
 		if self.submenu == SubMenu.MAIN:
 
+			"""
+			Main Menu
+			
+			[Button] Local Game
+			[Button] Network Game
+			[Button] Quit
+			"""
 			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
 												   relative_rect=pygame.Rect((horizontal_middle, v_offset), (button_width, button_height)),
 												   text="Local Game",
@@ -85,12 +94,20 @@ class Menu:
 												   text="Network Game",
 												   object_id="call_menu_network")
 			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
-												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 2 * (button_height + padding)), (button_width, button_height)),
+												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 3 * (button_height + padding)), (button_width, button_height)),
 												   text="Quit",
 												   object_id="quit")
 
 		elif self.submenu == SubMenu.LOCAL:
 
+			"""
+			Local Game Menu
+
+			[Button] 1 Player
+			[Button] 2 Player
+			[Button] Spectate
+			[Button] Back
+			"""
 			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
 												   relative_rect=pygame.Rect((horizontal_middle, v_offset), (button_width, button_height)),
 												   text="1-Player",
@@ -110,7 +127,17 @@ class Menu:
 
 		elif self.submenu == SubMenu.SINGLE:
 
-			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
+			"""
+			1 Player Menu
+
+			[Option] SFX
+			[Option] CPU0 Difficulty
+			[Button] Start Game
+			[Button] Back
+			"""
+
+			# TEMP
+			"""pygame_gui.elements.ui_label.UILabel(manager=self.manager,
 												 relative_rect=pygame.Rect((int(self.display_width / 2 - (200 + padding) + h_offset), v_offset - 2 * (button_height + padding)), (200, button_height)),
 												 text="Sound Effects")
 			pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(manager=self.manager,
@@ -118,6 +145,7 @@ class Menu:
 																 options_list=["Enabled", "Disabled"],
 																 starting_option=("Enabled" if c4gui.config.get("Global", "sfx_enabled", bool) else "Disabled"),
 																 object_id="set_sfx")
+			"""
 			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
 												 relative_rect=pygame.Rect((int(self.display_width / 2 - (180 + padding) + h_offset), v_offset - (button_height + padding)), (200, button_height)),
 												 text="AI Difficulty")
@@ -131,24 +159,23 @@ class Menu:
 																			   relative_rect=pygame.Rect((int(self.display_width / 2 + 500 + padding + h_offset), v_offset - button_height), (200, 50)),
 																			   text=str(start_value))
 			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
-												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 3 * (button_height + padding)), (button_width, button_height)),
+												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 2 * (button_height + padding)), (button_width, button_height)),
 												   text="Start",
 												   object_id="call_game_single")
 			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
-												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 4 * (button_height + padding)), (button_width, button_height)),
+												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 3 * (button_height + padding)), (button_width, button_height)),
 												   text="Back",
 												   object_id="call_menu_local")
 
 		elif self.submenu == SubMenu.DOUBLE:
 
-			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
-												 relative_rect=pygame.Rect((int(self.display_width / 2 - (200 + padding) + h_offset), v_offset), (200, button_height)),
-												 text="Sound Effects")
-			pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(manager=self.manager,
-																 relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset), v_offset + 20), (200, 40)),
-																 options_list=["Enabled", "Disabled"],
-																 starting_option=("Enabled" if c4gui.config.get("Global", "sfx_enabled", bool) else "Disabled"),
-																 object_id="set_sfx")
+			"""
+			2 Player Menu
+
+			[Option] SFX
+			[Button] Start Game
+			[Button] Back
+			"""
 			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
 												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 2 * (button_height + padding)), (button_width, button_height)),
 												   text="Start",
@@ -160,14 +187,15 @@ class Menu:
 
 		elif self.submenu == SubMenu.SPECTATE:
 
-			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
-												 relative_rect=pygame.Rect((int(self.display_width / 2 - (200 + padding) + h_offset), v_offset - 2 * (button_height + padding)), (200, button_height)),
-												 text="Sound Effects")
-			pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(manager=self.manager,
-																 relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset), v_offset - 2 * (button_height + padding) + 20), (200, 40)),
-																 options_list=["Enabled", "Disabled"],
-																 starting_option=("Enabled" if c4gui.config.get("Global", "sfx_enabled", bool) else "Disabled"),
-																 object_id="set_sfx")
+			"""
+			Spectate Menu
+
+			[Option] SFX
+			[Option] CPU1 Difficulty
+			[Option] CPU2 Difficulty
+			[Button] Start Game
+			[Button] Back
+			"""
 			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
 												 relative_rect=pygame.Rect((int(self.display_width / 2 - (200 + padding) + h_offset), v_offset - (button_height + padding)), (220, button_height)),
 												 text="CPU 1 Difficulty")
@@ -202,11 +230,47 @@ class Menu:
 												   object_id="call_menu_local")
 
 		elif self.submenu == SubMenu.NETWORK:
-			callback_do_nothing()
+
+			"""
+			Network Menu
+
+			[Button] Host Game
+			[Button] Join Game
+			[Button] Back
+			"""
+			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
+												   relative_rect=pygame.Rect((horizontal_middle, v_offset), (button_width, button_height)),
+												   text="Host Game",
+												   object_id="call_menu_host")
+			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
+												   relative_rect=pygame.Rect((horizontal_middle, v_offset + button_height + padding), (button_width, button_height)),
+												   text="Join Game",
+												   object_id="call_menu_join")
+			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
+												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 3 * (button_height + padding)), (button_width, button_height)),
+												   text="Back",
+												   object_id="call_menu_main")
+
 		elif self.submenu == SubMenu.HOST:
+
+			"""
+			Host Menu
+	
+			TODO!
+			[Button] Back
+			"""
 			callback_do_nothing()
+
 		elif self.submenu == SubMenu.JOIN:
+
+			"""
+			Join Menu
+
+			TODO!
+			[Button] Back
+			"""
 			callback_do_nothing()
+
 		else:
 			raise IndexError("undefined submenu called")
 
@@ -218,7 +282,7 @@ class Menu:
 		"""
 		
 		return c4gui.styles.FONT.render(data, True, self.theme.text)
-	
+
 	def set_theme(self, theme: c4gui.Theme) -> None:
 		"""
 		Set the menu theme
@@ -227,6 +291,15 @@ class Menu:
 		"""
 
 		self.theme = theme
+
+	def set_sound(self, enabled: bool) -> None:
+		"""
+		Set the menu theme
+
+		enabled -- True if sound is enabled; False if sound is disabled
+		"""
+
+		self.sound = enabled
 
 	def toggle_theme(self) -> None:
 		"""Toggle between LIGHT and DARK themes"""
@@ -239,6 +312,17 @@ class Menu:
 			self.set_theme(c4gui.styles.THEME_LIGHT)
 			c4gui.config.set("Global", "theme", "THEME_LIGHT")
 		self.reload_manager()
+
+	def toggle_sound(self) -> None:
+		"""Toggle between enabled and disabled sound"""
+
+		# Toggle the sound setting
+		if self.sound:
+			self.set_sound(False)
+			c4gui.config.set("Global", "sfx_enabled", False)
+		else:
+			self.set_sound(True)
+			c4gui.config.set("Global", "sfx_enabled", True)
 
 	def render(self, surface: pygame.Surface, clock: pygame.time.Clock) -> None:
 		"""
@@ -254,6 +338,7 @@ class Menu:
 		
 		# Set special button boundaries
 		theme_button = pygame.Rect(self.display_width - 60, 10, 50, 50)
+		sound_button = pygame.Rect(self.display_width - 60, 60, 50, 50)
 
 		# Loop until a user triggers callback
 		while True:
@@ -272,8 +357,13 @@ class Menu:
 
 					# Check if the mouse clicked the theme button
 					if theme_button.collidepoint(event.pos[0], event.pos[1]):
-						c4gui.sfx.play("toggle")
 						self.toggle_theme()
+						c4gui.sfx.play("toggle")
+
+					# Check if the mouse clicked the sound button
+					if sound_button.collidepoint(event.pos[0], event.pos[1]):
+						self.toggle_sound()
+						c4gui.sfx.play("toggle")
 
 				# Handle menu elements
 				elif event.type == pygame.USEREVENT:
@@ -281,16 +371,25 @@ class Menu:
 					if event.user_type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
 
 						if "set_cpu0" in event.ui_element.object_ids:
-							self.element_values["cpu0"].set_text(str(event.value))
+							if self.element_values["cpu0"].text != str(event.value):
+								self.element_values["cpu0"].set_text(str(event.value))
+								c4gui.config.set("Computer0", "difficulty", int(event.value))
+								c4gui.sfx.play("tick")
 						elif "set_cpu1" in event.ui_element.object_ids:
-							self.element_values["cpu1"].set_text(str(event.value))
+							if self.element_values["cpu1"].text != str(event.value):
+								self.element_values["cpu1"].set_text(str(event.value))
+								c4gui.config.set("Computer1", "difficulty", int(event.value))
+								c4gui.sfx.play("tick")
 						elif "set_cpu2" in event.ui_element.object_ids:
-							self.element_values["cpu2"].set_text(str(event.value))
+							if self.element_values["cpu2"].text != str(event.value):
+								self.element_values["cpu2"].set_text(str(event.value))
+								c4gui.config.set("Computer2", "difficulty", int(event.value))
+								c4gui.sfx.play("tick")
 
 					elif event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
 
-						if "set_sfx" in event.ui_element.object_ids:
-							c4gui.config.set("Global", "sfx_enabled", (event.text == "Enabled"))
+						# color pickers here
+						pass
 
 					elif event.user_type == pygame_gui.UI_BUTTON_PRESSED:
 
@@ -315,9 +414,11 @@ class Menu:
 						elif "call_menu_spectate" in event.ui_element.object_ids:
 							self.submenu = SubMenu.SPECTATE
 						elif "call_menu_host" in event.ui_element.object_ids:
-							self.submenu = SubMenu.HOST
+							callback_do_nothing()
+							#self.submenu = SubMenu.HOST
 						elif "call_menu_join" in event.ui_element.object_ids:
-							self.submenu = SubMenu.JOIN
+							callback_do_nothing()
+							#self.submenu = SubMenu.JOIN
 
 						# Game action
 						elif "call_game_single" in event.ui_element.object_ids:
@@ -347,7 +448,8 @@ class Menu:
 			surface.fill(self.theme.background)
 			surface.blit(self.theme.logo, (logo_x, logo_y))
 			surface.blit(pygame.transform.scale(self.theme.icons.theme, (theme_button.width, theme_button.height)), (theme_button.x, theme_button.y))
-			
+			surface.blit(pygame.transform.scale(self.theme.icons.sound_on if self.sound else self.theme.icons.sound_off, (sound_button.width, sound_button.height)), (sound_button.x, sound_button.y))
+
 			# Render the drawing
 			self.manager.draw_ui(surface)
 			pygame.display.update()

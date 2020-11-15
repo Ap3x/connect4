@@ -21,7 +21,7 @@ def screen_menu(start_at: int = c4gui.menu.SubMenu.MAIN) -> None:
     """
 
     # Make a new Menu and render all objects
-    menu = c4gui.menu.Menu(c4gui.config.get("Global", "theme", c4gui.Theme), WIDTH, HEIGHT, start_at, screen_game)
+    menu = c4gui.menu.Menu(WIDTH, HEIGHT, start_at, screen_game)
     menu.render(DISPLAY, CLOCK)
 
 

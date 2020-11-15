@@ -34,7 +34,6 @@ class Game:
 		theme -- A c4gui styling theme
 		display_width -- The screen display width
 		display_height -- The screen display height
-		players -- The Players object containing names and colors of each user
 		"""
 
 		# Instantiate an array of boards (rows and columns) with a single blank board
