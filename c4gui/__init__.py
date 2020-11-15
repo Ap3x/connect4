@@ -25,7 +25,7 @@ pygame.display.set_icon(pygame.image.load(os.path.join(ASSET_PATH, "favicon.png"
 pygame.display.set_caption("Connect4")
 
 # Declare named tuples
-Icons = namedtuple("Icons", "theme nav_first nav_prev nav_nonce nav_next nav_last")
+Icons = namedtuple("Icons", "theme sound_on sound_off nav_first nav_prev nav_nonce nav_next nav_last")
 Theme = namedtuple("Theme", "text background button hover logo icons icons_hover board empty shadow gui_ext")
 Players = namedtuple("Players", "p1_name p1_color p2_name p2_color")
 MoveCallbacks = namedtuple("MoveCallbacks", "human computer network")

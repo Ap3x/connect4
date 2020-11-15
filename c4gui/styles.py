@@ -40,6 +40,8 @@ FONT_LARGE = pygame.font.SysFont("Open Sans", 40)
 
 # Icon sets
 ICONS_LIGHT = c4gui.Icons(theme=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "light", "theme.png")),
+						  sound_on=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "light", "sound_on.png")),
+						  sound_off=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "light", "sound_off.png")),
 						  nav_first=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "light", "nav_first.png")),
 						  nav_prev=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "light", "nav_prev.png")),
 						  nav_nonce=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "light", "nav_nonce.png")),
@@ -47,6 +49,8 @@ ICONS_LIGHT = c4gui.Icons(theme=pygame.image.load(os.path.join(c4gui.ASSET_PATH,
 						  nav_last=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "light", "nav_last.png")))
 
 ICONS_DARK = c4gui.Icons(theme=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "dark", "theme.png")),
+						 sound_on=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "dark", "sound_on.png")),
+						 sound_off=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "dark", "sound_off.png")),
 						 nav_first=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "dark", "nav_first.png")),
 						 nav_prev=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "dark", "nav_prev.png")),
 						 nav_nonce=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "dark", "nav_nonce.png")),
@@ -54,6 +58,8 @@ ICONS_DARK = c4gui.Icons(theme=pygame.image.load(os.path.join(c4gui.ASSET_PATH, 
 						 nav_last=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "dark", "nav_last.png")))
 
 ICONS_LIGHT_HOVER = c4gui.Icons(theme=None,
+								sound_on=None,
+								sound_off=None,
 								nav_first=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "light_hover", "nav_first.png")),
 								nav_prev=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "light_hover", "nav_prev.png")),
 								nav_nonce=None,
@@ -61,6 +67,8 @@ ICONS_LIGHT_HOVER = c4gui.Icons(theme=None,
 								nav_last=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "light_hover", "nav_last.png")))
 
 ICONS_DARK_HOVER = c4gui.Icons(theme=None,
+							   sound_on=None,
+							   sound_off=None,
 							   nav_first=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "dark_hover", "nav_first.png")),
 							   nav_prev=pygame.image.load(os.path.join(c4gui.ASSET_PATH, "icons", "dark_hover", "nav_prev.png")),
 							   nav_nonce=None,

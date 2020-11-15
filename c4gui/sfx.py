@@ -10,6 +10,7 @@ sound_path = os.path.join(c4gui.ASSET_PATH, "sfx")
 
 SFX: dict = {
 	"click": os.path.join(sound_path, "click.wav"),
+	"tick": os.path.join(sound_path, "tick.wav"),
 	"toggle": os.path.join(sound_path, "toggle.wav"),
 	"token_drop": os.path.join(sound_path, "token_drop"),
 	"invalid": os.path.join(sound_path, "invalid.wav"),
