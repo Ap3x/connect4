@@ -91,7 +91,6 @@ def cpu_algorithm_hard(board: [[]], letter: chr, depth: int) -> None:
 	Hard Algorithm for CPU player
 
 	letter -- character to place
-
 	depth -- search depth for how many future moves to calculate
 	"""
 	def evaluate_board(tmp: [[]], letter: chr) -> int:
