@@ -108,23 +108,27 @@ def init() -> None:
 				"theme": "THEME_LIGHT",
 				"sfx_enabled": True
 			},
-			"Player": {
-				"name": "Player",
-				"color": c4gui.styles.COLOR_RED
+			"Player1": {
+				"name": "Player1",
+				"color": c4gui.styles.COLORS["RED"]
+			},
+			"Player2": {
+				"name": "Player2",
+				"color": c4gui.styles.COLORS["YELLOW"]
 			},
 			"Computer0": {
 				"name": "CPU",
-				"color": c4gui.styles.COLOR_YELLOW,
+				"color": c4gui.styles.COLORS["YELLOW"],
 				"difficulty": 5
 			},
 			"Computer1": {
 				"name": "CPU 1",
-				"color": c4gui.styles.COLOR_RED,
+				"color": c4gui.styles.COLORS["RED"],
 				"difficulty": 5
 			},
 			"Computer2": {
 				"name": "CPU 2",
-				"color": c4gui.styles.COLOR_YELLOW,
+				"color": c4gui.styles.COLORS["YELLOW"],
 				"difficulty": 5
 			},
 			"Network": {

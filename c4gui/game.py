@@ -282,7 +282,7 @@ class Game:
 			color: str = self.players.p2_color
 			text = "%s wins!" % self.players.p2_name
 		else:
-			color: str = c4gui.styles.COLOR_GRAY
+			color: str = c4gui.styles.COLORS["GRAY"]
 			text = "It's a tie!"
 
 		text = c4gui.styles.FONT.render(text, True, color)
@@ -455,7 +455,7 @@ class Game:
 
 				# Play a game end sound after the first render
 				if play_sound:
-					if self.winner == Winner.P1:
+					if self.game_type == GameType.SPECTATE or self.winner == Winner.P1:
 						c4gui.sfx.play("win")
 					elif self.winner == Winner.P2:
 						c4gui.sfx.play("lose")
