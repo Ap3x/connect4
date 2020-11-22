@@ -93,6 +93,13 @@ def cpu_algorithm_hard(board: [[]], letter: chr, depth: int) -> None:
 	letter -- character to place
 	depth -- search depth for how many future moves to calculate
 	"""
+	
+	# Store move letter for opponent
+	if letter == 'X':
+		opponent = 'O'
+	else:
+		opponent = 'X'
+	
 	def evaluate_board(tmp: [[]], letter: chr) -> int:
 		"""
 		Evaluate board state
@@ -104,10 +111,6 @@ def cpu_algorithm_hard(board: [[]], letter: chr, depth: int) -> None:
 		rating:int = 0
 		direction: [[]] = [[0,-1],[0,1],[-1,0],[-1,-1],[-1,1],[1,0],[1,-1],[1,1]]
 
-		if letter == 'X':
-			opponent = 'O'
-		else:
-			opponent = 'X'
 		for y in range(0,c4gui.MAX_ROWS):
 			for x in range(0,c4gui.MAX_COLS):
 				if tmp[y][x] == letter:
@@ -138,9 +141,13 @@ def cpu_algorithm_hard(board: [[]], letter: chr, depth: int) -> None:
 									count_bad += 9999
 		rating = count_good - count_bad
 		return rating
-
-	# Find best path implementing alpha beta pruning	
+	
 	def a_b_pruning(node: Node) -> None:
+		"""
+		Recursive alpha beta pruning method
+
+		node -- Board object thats apart of game tree. Initially passed root node. 
+		"""
 		
 		# Pruning check
 		if node.alpha < node.beta:
@@ -187,12 +194,6 @@ def cpu_algorithm_hard(board: [[]], letter: chr, depth: int) -> None:
 	tmp_score: int
 	tmp_board = copy.deepcopy(board)
 	original_board = copy.deepcopy(board)
-
-	# Store move letter for opponent
-	if letter == 'X':
-		opponent = 'O'
-	else:
-		opponent = 'X'
 		
 	# Create game tree for all possible moves
 	root: Node = Node()
