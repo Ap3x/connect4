@@ -71,6 +71,7 @@ class Menu:
 		h_offset: int = -200
 		padding: int = 20
 		horizontal_middle: int = int(self.display_width / 2 - button_width / 2)
+		color_list = [x for x in c4gui.styles.get_all_color_names() if x not in ["Black", "White"]]
 
 		# Clear the surface
 		self.manager.clear_and_reset()
@@ -130,22 +131,23 @@ class Menu:
 			"""
 			1 Player Menu
 
-			[Option] SFX
+			[Option] P1 Name & Color
 			[Option] CPU0 Difficulty
 			[Button] Start Game
 			[Button] Back
 			"""
 
-			# TEMP
-			"""pygame_gui.elements.ui_label.UILabel(manager=self.manager,
-												 relative_rect=pygame.Rect((int(self.display_width / 2 - (200 + padding) + h_offset), v_offset - 2 * (button_height + padding)), (200, button_height)),
-												 text="Sound Effects")
+			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
+												 relative_rect=pygame.Rect((int(self.display_width / 2 - (150 + padding) + h_offset), v_offset - 2 * (button_height + padding)), (200, button_height)),
+												 text="Player")
+			pygame_gui.elements.ui_text_entry_line.UITextEntryLine(manager=self.manager,
+																   relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset), v_offset - 2 * (button_height + padding) + 18), (200, 40)),
+																   object_id="set_player1_name").set_text(c4gui.config.get("Player1", "name", str))
 			pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(manager=self.manager,
-																 relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset), v_offset - 2 * (button_height + padding) + 20), (200, 40)),
-																 options_list=["Enabled", "Disabled"],
-																 starting_option=("Enabled" if c4gui.config.get("Global", "sfx_enabled", bool) else "Disabled"),
-																 object_id="set_sfx")
-			"""
+																 relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset + 300), v_offset - 2 * (button_height + padding) + 25), (200, 40)),
+																 options_list=color_list,
+																 starting_option=c4gui.styles.get_color_name_from_tuple(c4gui.config.get("Player1", "color", tuple)),
+																 object_id="set_player1_color")
 			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
 												 relative_rect=pygame.Rect((int(self.display_width / 2 - (180 + padding) + h_offset), v_offset - (button_height + padding)), (200, button_height)),
 												 text="AI Difficulty")
@@ -172,10 +174,33 @@ class Menu:
 			"""
 			2 Player Menu
 
-			[Option] SFX
+			[Option] P1 Name & Color
+			[Option] P2 Name & Color
 			[Button] Start Game
 			[Button] Back
 			"""
+			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
+												 relative_rect=pygame.Rect((int(self.display_width / 2 - (150 + padding) + h_offset), v_offset - 2 * (button_height + padding)), (200, button_height)),
+												 text="Player 1")
+			pygame_gui.elements.ui_text_entry_line.UITextEntryLine(manager=self.manager,
+																   relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset), v_offset - 2 * (button_height + padding) + 18), (200, 40)),
+																   object_id="set_player1_name").set_text(c4gui.config.get("Player1", "name", str))
+			pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(manager=self.manager,
+																 relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset + 300), v_offset - 2 * (button_height + padding) + 25), (200, 40)),
+																 options_list=color_list,
+																 starting_option=c4gui.styles.get_color_name_from_tuple(c4gui.config.get("Player1", "color", tuple)),
+																 object_id="set_player1_color")
+			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
+												 relative_rect=pygame.Rect((int(self.display_width / 2 - (150 + padding) + h_offset), v_offset - (button_height + padding)), (200, button_height)),
+												 text="Player 2")
+			pygame_gui.elements.ui_text_entry_line.UITextEntryLine(manager=self.manager,
+																   relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset), v_offset - (button_height + padding) + 18), (200, 40)),
+																   object_id="set_player2_name").set_text(c4gui.config.get("Player2", "name", str))
+			pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(manager=self.manager,
+																 relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset + 300), v_offset - (button_height + padding) + 25), (200, 40)),
+																 options_list=color_list,
+																 starting_option=c4gui.styles.get_color_name_from_tuple(c4gui.config.get("Player2", "color", tuple)),
+																 object_id="set_player2_color")
 			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
 												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 2 * (button_height + padding)), (button_width, button_height)),
 												   text="Start",
@@ -190,7 +215,6 @@ class Menu:
 			"""
 			Spectate Menu
 
-			[Option] SFX
 			[Option] CPU1 Difficulty
 			[Option] CPU2 Difficulty
 			[Button] Start Game
@@ -386,10 +410,19 @@ class Menu:
 								c4gui.config.set("Computer2", "difficulty", int(event.value))
 								c4gui.sfx.play("tick")
 
+					elif event.user_type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
+
+						if "set_player1_name" in event.ui_element.object_ids:
+							c4gui.config.set("Player1", "name", event.text)
+						elif "set_player2_name" in event.ui_element.object_ids:
+							c4gui.config.set("Player2", "name", event.text)
+
 					elif event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
 
-						# color pickers here
-						pass
+						if "set_player1_color" in event.ui_element.object_ids:
+							c4gui.config.set("Player1", "color", c4gui.styles.get_color_from_name(event.text))
+						elif "set_player2_color" in event.ui_element.object_ids:
+							c4gui.config.set("Player2", "color", c4gui.styles.get_color_from_name(event.text))
 
 					elif event.user_type == pygame_gui.UI_BUTTON_PRESSED:
 

@@ -102,7 +102,7 @@
   "drop_down_menu": {
     "prototype": "#main"
   },
-  "text_box": {
+  "text_entry_line": {
     "prototype": "#main"
   },
   "horizontal_slider": {
