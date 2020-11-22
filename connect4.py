@@ -197,7 +197,7 @@ def computer_event(from_game: c4gui.game.Game, p1turn: bool) -> None:
     """
 
     board = from_game.get_boards()[-1]
-    c4utils.cpu_algorithm_easy(board, "X" if p1turn else "O")
+    c4utils.cpu_algorithm_hard(board, "X" if p1turn else "O",4)
     from_game.update_board(board)
     move_end_event(from_game, board, p1turn)
 
