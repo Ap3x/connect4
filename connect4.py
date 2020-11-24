@@ -142,6 +142,13 @@ def screen_networkplay(from_menu: c4gui.menu) -> None:
 
 
 def move_end_event(from_game: c4gui.game.Game, board: [[]], p1turn: bool) -> None:
+    """
+    Callback to handle the end of a player's turn
+
+    from_game -- The game object used to check for the current player
+    board -- The game board object
+    p1turn -- Boolean representing which player made the most recent move
+    """
 
     if c4utils.check_win(board):
         from_game.set_winner(c4gui.game.Winner.P1 if p1turn else c4gui.game.Winner.P2)
