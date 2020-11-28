@@ -4,7 +4,7 @@
 import c4gui
 import pygame
 import pygame_gui
-from typing import Tuple, Callable
+from typing import Callable
 
 
 class SubMenu:
@@ -41,7 +41,7 @@ class Menu:
 		submenu -- The specific menu to render on initialization
 		game_callback -- The callable for a game start event
 		"""
-		
+
 		# Instantiate passed variables
 		self.theme = c4gui.config.get("Global", "theme", c4gui.Theme)
 		self.sound = c4gui.config.get("Global", "sfx_enabled", bool)
@@ -304,7 +304,7 @@ class Menu:
 		
 		data - The plain text to be formatted
 		"""
-		
+
 		return c4gui.styles.FONT.render(data, True, self.theme.text)
 
 	def set_theme(self, theme: c4gui.Theme) -> None:
@@ -355,11 +355,11 @@ class Menu:
 		surface -- The pygame surface to draw on
 		clock -- The pygame clock to iteratively refresh
 		"""
-		
+
 		# Center the logo horizontally and pad from the top
 		logo_x = self.display_width / 2 - self.theme.logo.get_size()[0] / 2
 		logo_y = 100
-		
+
 		# Set special button boundaries
 		theme_button = pygame.Rect(self.display_width - 60, 10, 50, 50)
 		sound_button = pygame.Rect(self.display_width - 60, 60, 50, 50)
@@ -368,7 +368,7 @@ class Menu:
 		while True:
 
 			time_delta = clock.tick(60) / 1000.0
-			
+
 			# Handle and remove all events from the pygame queue from the last tick
 			# https://github.com/pygame/pygame/blob/e40d00db1f8015e8f37624f83a0bd334547cd8dc/docs/reST/ref/event.rst
 			for event in pygame.event.get():
@@ -476,7 +476,7 @@ class Menu:
 				self.manager.process_events(event)
 
 			self.manager.update(time_delta)
-			
+
 			# Draw the background, logo, and theme button
 			surface.fill(self.theme.background)
 			surface.blit(self.theme.logo, (logo_x, logo_y))
