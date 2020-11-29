@@ -2,7 +2,7 @@
 import main
 import socket
 import pickle
-from _thread import *
+from threading
 import sys
 import os
 import network
@@ -13,8 +13,9 @@ server = "0.0.0.0"
 port = 5969
 
 def start_server_thread():
-	start_new_thread(start_server)
-	ret = network.Network("127.0.0.1",port)
+	ret = threading.Thread(target=start_server)
+	ret.start()
+	#ret = network.Network("127.0.0.1",port)
 	return ret
 
 def start_server():
@@ -30,7 +31,7 @@ def start_server():
 	while True:
 		conn, addr = s.accept()
 		#print("Connected to:", addr)
-		start_new_thread(threaded_client, (conn,))
+		threading.Thread(target=threaded_client,args=(conn)).start()
 
 def threaded_client(conn):
 	conn.send(str.encode("Connected"))
