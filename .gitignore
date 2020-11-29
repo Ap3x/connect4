@@ -1,4 +1,4 @@
-*.ini
+/settings.ini
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -9,5 +9,3 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 __pypackages__/
-
-/settings.ini
