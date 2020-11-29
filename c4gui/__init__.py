@@ -9,7 +9,7 @@ from collections import namedtuple
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 os.environ["SDL_VIDEO_CENTERED"] = "1"
 SCALE_MODIFIER: float = 1
-ORIGIN_PATH: str = os.path.join(os.path.dirname(__file__), "../")
+ORIGIN_PATH: str = os.path.normpath(os.path.join(os.path.dirname(__file__), "../"))
 ASSET_PATH: str = os.path.join(ORIGIN_PATH, "assets")
 TICKSPEED: int = 30
 CPU_DELAY: int = 5
