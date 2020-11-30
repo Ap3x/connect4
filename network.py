@@ -57,7 +57,7 @@ class Network:
 		"""
 		try:
 			data_stream = pickle.dumps(data)
-			self.client.send(data_stream)
+			self.client.sendall(data_stream)
 			return self.client.recv(2048)
 		except socket.error as e:
 			print(e)
