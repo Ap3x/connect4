@@ -39,7 +39,6 @@ After finishing the game, each turn may be reviewed by clicking on the navigatio
 
 ## To-Do
 * Create remote 2-player game through remote network (LAN?) play
-* Add setup instructions for Windows
 
 ## Download
 * [Latest release (~)](https://github.com/Ap3x/connect4/archive/master.zip) (Stable)
@@ -48,9 +47,20 @@ After finishing the game, each turn may be reviewed by clicking on the navigatio
 ## Setup
 
 ### Windows
+Install Python3 (any version >= 3.4):
+https://www.python.org/downloads/
 
-### Linux 
-In order to ensure that you have all the need packages please install the packages as listed below.
+Install PyGame:
+https://www.pygame.org/wiki/GettingStarted
+
+In order to ensure that you have all the required packages, please install the packages as listed below:
+
+```shell
+$ py -m pip install -r requirements.txt
+```
+
+### Linux
+In order to ensure that you have all the required packages, please install the packages as listed below:
 
 ```shell
 $ pip install -r requirements.txt
@@ -61,8 +71,8 @@ $ sudo apt install python3-pygame
 Once in the source directory, run the following command to execute the program:
 
 ```
-$ ./main.py
+$ python ./connect4.py
 ```
 
-## License 
+## License
 [MIT](https://github.com/Ap3x/connect4/blob/master/LICENSE.md)
