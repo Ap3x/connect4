@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-import main
 import socket
 import pickle
-from threading
+import threading
 import sys
 import os
 import network
