@@ -41,8 +41,8 @@ After finishing the game, each turn may be reviewed by clicking on the navigatio
 * Create remote 2-player game through remote network (LAN?) play
 
 ## Download
-* [Latest release (~)](https://github.com/Ap3x/connect4/archive/master.zip) (Stable)
-* [Latest dev build (v0.5)](https://github.com/Ap3x/connect4/archive/develop.zip) (Experimental)
+* [Latest release (v1.0)](https://github.com/Ap3x/connect4/archive/master.zip) (Stable)
+* [Latest dev build (v1.0)](https://github.com/Ap3x/connect4/archive/develop.zip) (Experimental)
 
 ## Setup
 
