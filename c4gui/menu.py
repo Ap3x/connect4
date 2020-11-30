@@ -501,7 +501,8 @@ class Menu:
 					if network_data == "DISCONNECT":
 						self.network_data = None
 					elif network_data == "START":
-						self.game_callback(self, c4gui.game.GameType.JOIN)
+						self.send_network_data()
+						self.game_callback(self, c4gui.game.GameType.JOIN,self.network)
 					else:
 						self.network_data = network_data
 
@@ -611,9 +612,7 @@ class Menu:
 							network_parts = c4gui.config.get("Network", "last_connection", str).split(":", 1)
 							self.network = network.Network(server_ip=network_parts[0], port=int(network_parts[1]))
 							if self.network.connect():
-								print("sending")
-								self.network.send((c4gui.config.get("Player1", "name", str), c4gui.styles.get_color_name_from_tuple(c4gui.config.get("Player1", "color", tuple))))
-								print("sent")
+								self.send_network_data()
 								self.submenu = SubMenu.JOIN_LOBBY
 							else:
 								# TODO throw join error message
@@ -628,7 +627,8 @@ class Menu:
 							self.game_callback(self, c4gui.game.GameType.SPECTATE)
 						elif "call_game_host" in event.ui_element.object_ids:
 							self.send_network_data("START")
-							self.game_callback(self, c4gui.game.GameType.HOST)
+							self.send_network_data()
+							self.game_callback(self, c4gui.game.GameType.HOST,self.network)
 
 						# Invalid ID
 						else:
