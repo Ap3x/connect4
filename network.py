@@ -1,6 +1,5 @@
 import socket
 import pickle
-import main
 import threading
 import queue
 
@@ -23,11 +22,15 @@ class Network:
 		self.port = port
 		self.addr = (self.server, self.port)
 		self.xqu = queue.Queue()
+		self.active = False
 
 	def listener(self):
-		while True:
+		while self.active:
 			rec = pickle.loads(self.client.recv(2048))
 			self.xqu.put(rec)
+	
+	def stop(self):
+		self.active = False
 
 	def connect(self):
 		"""
@@ -36,6 +39,7 @@ class Network:
 		try:
 			self.client.connect(self.addr)
 			if self.client.recv(2048).decode() == "Connected":
+				self.active = True
 				threading.Thread(target=Network.listener,args=(self)).start()
 			else:
 				self.client.shutdown()
@@ -53,7 +57,7 @@ class Network:
 		"""
 		try:
 			data_stream = pickle.dumps(data)
-			self.client.send(data_stream)
+			self.client.sendall(data_stream)
 			return self.client.recv(2048)
 		except socket.error as e:
 			print(e)
