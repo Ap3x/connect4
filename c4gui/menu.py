@@ -78,7 +78,7 @@ class Menu:
 		h_offset: int = -200
 		padding: int = 20
 		horizontal_middle: int = int(self.display_width / 2 - button_width / 2)
-		color_list = [x for x in c4gui.styles.get_all_color_names() if x not in ["Black", "White"]]
+		color_list = [x for x in c4gui.styles.get_all_color_names() if x not in ["Black", "White", "Dark Gray"]]
 
 		# Clear the surface
 		self.manager.clear_and_reset()
