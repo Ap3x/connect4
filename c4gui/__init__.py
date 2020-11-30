@@ -9,7 +9,8 @@ from collections import namedtuple
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 os.environ["SDL_VIDEO_CENTERED"] = "1"
 SCALE_MODIFIER: float = 1
-GAMEPATH: str = os.path.join(os.path.dirname(__file__), "../assets")
+ORIGIN_PATH: str = os.path.normpath(os.path.join(os.path.dirname(__file__), "../"))
+ASSET_PATH: str = os.path.join(ORIGIN_PATH, "assets")
 TICKSPEED: int = 30
 CPU_DELAY: int = 5
 MAX_ROWS: int = 6
@@ -20,23 +21,23 @@ import pygame  # noqa: E402
 pygame.mixer.pre_init(44100, -16, 1, 512)
 pygame.mixer.init()
 pygame.init()
-pygame.display.set_icon(pygame.image.load(os.path.join(GAMEPATH, "favicon.png")))
+pygame.display.set_icon(pygame.image.load(os.path.join(ASSET_PATH, "favicon.png")))
 pygame.display.set_caption("Connect4")
 
 # Declare named tuples
-Icons = namedtuple("Icons", "theme nav_first nav_prev nav_nonce nav_next nav_last")
-Theme = namedtuple("Theme", "text background button hover logo icons icons_hover board empty shadow")
+Icons = namedtuple("Icons", "theme sound_on sound_off nav_first nav_prev nav_nonce nav_next nav_last")
+Theme = namedtuple("Theme", "text background button hover logo icons icons_hover board empty shadow gui_ext")
 Players = namedtuple("Players", "p1_name p1_color p2_name p2_color")
 MoveCallbacks = namedtuple("MoveCallbacks", "human computer network")
 Coordinates = namedtuple("Coordinates", "x y")
 
-# Inject all existing submodules
+# Inject all submodules
+import c4gui.config  # noqa: E402
 import c4gui.styles  # noqa: E402
-__all__ = []
-for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
-	__all__.append(module_name)
-	_module = loader.find_module(module_name).load_module(module_name)
-	globals()[module_name] = _module
+import c4gui.game  # noqa: E402
+import c4gui.menu  # noqa: E402
+import c4gui.sfx  # noqa: E402
+c4gui.config.init()
 
 # Find the scaling factor since Windows devices can be zoomed
 if sys.platform == "win32":
@@ -47,6 +48,17 @@ if sys.platform == "win32":
 		# ctypes.windll.user32.SetProcessDPIAware()
 	# except AttributeError:
 		# pass
+
+
+# Set global constants
+class Mouse:
+	LEFT = 1
+	MIDDLE = 2
+	RIGHT = 3
+	SCROLL_UP = 4
+	SCROLL_DOWN = 5
+	SIDE_DOWN = 6
+	SIDE_UP = 7
 
 
 # Interrupt handler

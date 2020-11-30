@@ -20,20 +20,20 @@ class GameType:
 	SPECTATE = 1
 	SINGLE = 2
 	DOUBLE = 3
-	NETWORK = 4
+	HOST = 4
+	JOIN = 5
 
 
 class Game:
 	"""Handles game board rendering and animation."""
 
-	def __init__(self, game_type: int, theme: c4gui.Theme, display_width: int, display_height: int, players: c4gui.Players = c4gui.Players(p1_name="Player 1", p1_color=c4gui.styles.COLOR_RED, p2_name="Player 2", p2_color=c4gui.styles.COLOR_YELLOW)) -> None:
+	def __init__(self, game_type: int, theme: c4gui.Theme, display_width: int, display_height: int) -> None:
 		"""
 		Set up board elements
 
 		theme -- A c4gui styling theme
 		display_width -- The screen display width
 		display_height -- The screen display height
-		players -- The Players object containing names and colors of each user
 		"""
 
 		# Instantiate an array of boards (rows and columns) with a single blank board
@@ -48,10 +48,31 @@ class Game:
 		self.states: list = []
 		self.game_type: int = game_type
 		self.theme: c4gui.Theme = theme
-		self.players: c4gui.Players = players
 		self.display_width: int = display_width
 		self.display_height: int = display_height
 		self.winner: int = Winner.NONE
+
+		# Determine players
+		if game_type == GameType.SINGLE:
+			self.players: c4gui.Players = c4gui.Players(p1_name=c4gui.config.get("Player1", "name", str),
+														p1_color=c4gui.config.get("Player1", "color", tuple),
+														p2_name=c4gui.config.get("Computer0", "name", str),
+														p2_color=c4gui.config.get("Computer0", "color", tuple))
+		elif game_type == GameType.DOUBLE:
+			self.players: c4gui.Players = c4gui.Players(p1_name=c4gui.config.get("Player1", "name", str),
+														p1_color=c4gui.config.get("Player1", "color", tuple),
+														p2_name=c4gui.config.get("Player2", "name", str),
+														p2_color=c4gui.config.get("Player2", "color", tuple))
+		elif game_type == GameType.SPECTATE:
+			self.players: c4gui.Players = c4gui.Players(p1_name=c4gui.config.get("Computer1", "name", str),
+														p1_color=c4gui.config.get("Computer1", "color", tuple),
+														p2_name=c4gui.config.get("Computer2", "name", str),
+														p2_color=c4gui.config.get("Computer2", "color", tuple))
+		elif game_type == GameType.HOST:
+			pass  # TODO
+
+		elif game_type == GameType.JOIN:
+			pass  # TODO
 
 		# Calculate dimensions
 		self.top: int = self.display_height * c4gui.styles.PADDING_TOP
@@ -166,7 +187,8 @@ class Game:
 				else:
 
 					# Filled spots get rendered as circles, which require an offset
-					pygame.draw.circle(surface, self.players.p1_color if self.boards[board][r][c] == "X" else self.players.p2_color, (int(x + self.tile_size / 2), int(y + self.tile_size / 2)), self.radius)
+					color = self.players.p1_color if self.boards[board][r][c] == "X" else self.players.p2_color
+					surface.blit(pygame.transform.scale(c4gui.styles.get_color_from_tuple(color, True, False), ((self.radius - 1) * 2, (self.radius - 1) * 2)), (int(x + c4gui.styles.SPRITE_SCALE * self.scale), int(y + c4gui.styles.SPRITE_SCALE * self.scale)))
 
 	def draw_hovering_token(self, surface: pygame.Surface, x_pos: int, color: Tuple[int, int, int]) -> None:
 		"""
@@ -176,7 +198,8 @@ class Game:
 		x_pos -- The horizontal component where the user's mouse is
 		color -- The RGB value for the token
 		"""
-		pygame.draw.circle(surface, color, (x_pos, int(self.tile_size / 2)), self.radius)
+		#pygame.draw.circle(surface, color, (x_pos, int(self.tile_size / 2)), self.radius)
+		surface.blit(pygame.transform.scale(c4gui.styles.get_color_from_tuple(color, True, True), ((self.radius - 1) * 2, (self.radius - 1) * 2)), (x_pos - self.tile_size / 2, 0))
 
 	def draw_review_text(self, surface: pygame.Surface, turn: int):
 		"""
@@ -261,7 +284,7 @@ class Game:
 			color: str = self.players.p2_color
 			text = "%s wins!" % self.players.p2_name
 		else:
-			color: str = c4gui.styles.COLOR_GRAY
+			color: str = c4gui.styles.COLORS["GRAY"]
 			text = "It's a tie!"
 
 		text = c4gui.styles.FONT.render(text, True, color)
@@ -315,14 +338,14 @@ class Game:
 					# TODO - Move these turn events outside of pygame events loop; the only dependent turn event is the user's turn
 
 					# User's turn
-					if self.game_type == GameType.DOUBLE or p1turn and (self.game_type == GameType.SINGLE or self.game_type == GameType.NETWORK):
+					if self.game_type == GameType.DOUBLE or p1turn and (self.game_type in [GameType.SINGLE, GameType.HOST]):
 
 						if event.type == pygame.MOUSEMOTION:
 
 							# Draw the x position of the mouse for a token hover effect
 							self.draw_hovering_token(surface, event.pos[0], self.players.p1_color if p1turn else self.players.p2_color)
 
-						elif event.type == pygame.MOUSEBUTTONDOWN:
+						elif event.type == pygame.MOUSEBUTTONDOWN and event.button == c4gui.Mouse.LEFT:
 
 							# Check if the mouse clicked within a tile relative to the valid list of columns
 							column: int = math.floor((event.pos[0] - self.grid_start_x) / self.tile_size)
@@ -349,7 +372,7 @@ class Game:
 						self.draw_turn(surface, p1turn)
 
 					# User-over-the-network's turn
-					elif self.game_type == GameType.NETWORK and not p1turn:
+					elif self.game_type == GameType.HOST and not p1turn:
 						move_callback.network(self, p1turn)
 						p1turn = self.end_turn(p1turn)
 
@@ -391,7 +414,7 @@ class Game:
 				nav_buttons_pos = self.draw_review_buttons(surface, tuple([x[0] for x in nav_buttons]))
 				exit_button = self.draw_exit_button(surface)
 
-				if event.type == pygame.MOUSEMOTION or event.type == pygame.MOUSEBUTTONDOWN:
+				if event.type == pygame.MOUSEMOTION or (event.type == pygame.MOUSEBUTTONDOWN and event.button == c4gui.Mouse.LEFT):
 
 					# Handle navigation buttons
 					for button in nav_buttons_pos.keys():
@@ -423,7 +446,7 @@ class Game:
 					if exit_button.collidepoint(event.pos[0], event.pos[1]):
 						if event.type == pygame.MOUSEMOTION:
 							self.draw_exit_button(surface, True)
-						elif event.type == pygame.MOUSEBUTTONDOWN:
+						elif event.type == pygame.MOUSEBUTTONDOWN and event.button == c4gui.Mouse.LEFT:
 							end_callback()
 							exit_game = True
 							break
@@ -434,8 +457,10 @@ class Game:
 
 				# Play a game end sound after the first render
 				if play_sound:
-					if self.winner == Winner.P1 or self.winner == Winner.P2:
+					if self.game_type == GameType.SPECTATE or self.game_type == GameType.DOUBLE or self.winner == Winner.P1:
 						c4gui.sfx.play("win")
+					elif self.winner == Winner.P2:
+						c4gui.sfx.play("lose")
 					elif self.winner == Winner.TIE:
 						c4gui.sfx.play("tie")
 					pygame.time.delay(2500)
