@@ -43,9 +43,13 @@ def get_color_from_name(x):
 	return COLORS[key]
 
 
-def get_color_from_tuple(x):
+def get_color_from_tuple(x, sprite: bool = False, tilted: bool = False):
 	for color in COLORS.keys():
 		if x == COLORS[color]:
+			if sprite:
+				if tilted:
+					return pygame.image.load(os.path.join(c4gui.ASSET_PATH, "tokens", "tilted", color.lower() + ".png"))
+				return pygame.image.load(os.path.join(c4gui.ASSET_PATH, "tokens", "level", color.lower() + ".png"))
 			return color
 	raise IndexError("unlisted color configuration")
 

@@ -22,22 +22,10 @@
       "size": "30",
       "bold": "0",
       "italic": "0",
-      "regular_resource": {
-        "package": "assets.fonts",
-        "resource": "OpenSans-Regular.ttf"
-      },
-      "bold_resource": {
-        "package": "assets.fonts",
-        "resource": "OpenSans-Bold.ttf"
-      },
-      "italic_resource": {
-        "package": "assets.fonts",
-        "resource": "OpenSans-Italic.ttf"
-      },
-      "bold_italic_resource": {
-        "package": "assets.fonts",
-        "resource": "OpenSans-BoldItalic.ttf"
-      }
+      "regular_path" : ".\\assets\\fonts\\OpenSans-Regular.ttf",
+      "bold_path" : ".\\assets\\fonts\\OpenSans-Bold.ttf",
+      "italic_path" : ".\\assets\\fonts\\OpenSans-Italic.ttf",
+      "bold_italic_path" : ".\\assets\\fonts\\OpenSans-BoldItalic.ttf"
     }
   },
   "button": {
@@ -63,22 +51,10 @@
       "size": "40",
       "bold": "0",
       "italic": "0",
-      "regular_resource": {
-        "package": "assets.fonts",
-        "resource": "OpenSans-Regular.ttf"
-      },
-      "bold_resource": {
-        "package": "assets.fonts",
-        "resource": "OpenSans-Bold.ttf"
-      },
-      "italic_resource": {
-        "package": "assets.fonts",
-        "resource": "OpenSans-Italic.ttf"
-      },
-      "bold_italic_resource": {
-        "package": "assets.fonts",
-        "resource": "OpenSans-BoldItalic.ttf"
-      }
+      "regular_path" : ".\\assets\\fonts\\OpenSans-Regular.ttf",
+      "bold_path" : ".\\assets\\fonts\\OpenSans-Bold.ttf",
+      "italic_path" : ".\\assets\\fonts\\OpenSans-Italic.ttf",
+      "bold_italic_path" : ".\\assets\\fonts\\OpenSans-BoldItalic.ttf"
     }
   },
   "#drop_down_default": {
@@ -87,10 +63,10 @@
       "size": "20",
       "bold": "0",
       "italic": "0",
-      "regular_resource": {
-        "package": "assets.fonts",
-        "resource": "OpenSans-Regular.ttf"
-      }
+      "regular_path" : ".\\assets\\fonts\\OpenSans-Regular.ttf",
+      "bold_path" : ".\\assets\\fonts\\OpenSans-Bold.ttf",
+      "italic_path" : ".\\assets\\fonts\\OpenSans-Italic.ttf",
+      "bold_italic_path" : ".\\assets\\fonts\\OpenSans-BoldItalic.ttf"
     }
   },
   "drop_down_menu.button": {

@@ -187,7 +187,8 @@ class Game:
 				else:
 
 					# Filled spots get rendered as circles, which require an offset
-					pygame.draw.circle(surface, self.players.p1_color if self.boards[board][r][c] == "X" else self.players.p2_color, (int(x + self.tile_size / 2), int(y + self.tile_size / 2)), self.radius)
+					color = self.players.p1_color if self.boards[board][r][c] == "X" else self.players.p2_color
+					surface.blit(pygame.transform.scale(c4gui.styles.get_color_from_tuple(color, True, False), ((self.radius - 1) * 2, (self.radius - 1) * 2)), (int(x + c4gui.styles.SPRITE_SCALE * self.scale), int(y + c4gui.styles.SPRITE_SCALE * self.scale)))
 
 	def draw_hovering_token(self, surface: pygame.Surface, x_pos: int, color: Tuple[int, int, int]) -> None:
 		"""
@@ -197,7 +198,8 @@ class Game:
 		x_pos -- The horizontal component where the user's mouse is
 		color -- The RGB value for the token
 		"""
-		pygame.draw.circle(surface, color, (x_pos, int(self.tile_size / 2)), self.radius)
+		#pygame.draw.circle(surface, color, (x_pos, int(self.tile_size / 2)), self.radius)
+		surface.blit(pygame.transform.scale(c4gui.styles.get_color_from_tuple(color, True, True), ((self.radius - 1) * 2, (self.radius - 1) * 2)), (x_pos - self.tile_size / 2, 0))
 
 	def draw_review_text(self, surface: pygame.Surface, turn: int):
 		"""
@@ -455,7 +457,7 @@ class Game:
 
 				# Play a game end sound after the first render
 				if play_sound:
-					if self.game_type == GameType.SPECTATE or self.winner == Winner.P1:
+					if self.game_type == GameType.SPECTATE or self.game_type == GameType.DOUBLE or self.winner == Winner.P1:
 						c4gui.sfx.play("win")
 					elif self.winner == Winner.P2:
 						c4gui.sfx.play("lose")
