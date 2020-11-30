@@ -42,7 +42,7 @@ After finishing the game, each turn may be reviewed by clicking on the navigatio
 
 ## Download
 * [Latest release (~)](https://github.com/Ap3x/connect4/archive/master.zip) (Stable)
-* [Latest dev build (v0.3)](https://github.com/Ap3x/connect4/archive/develop.zip) (Experimental)
+* [Latest dev build (v0.5)](https://github.com/Ap3x/connect4/archive/develop.zip) (Experimental)
 
 ## Setup
 

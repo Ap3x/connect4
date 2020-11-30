@@ -132,7 +132,6 @@ def init() -> None:
 				"difficulty": 5
 			},
 			"Network": {
-				"host_ip": "",
 				"host_port": 6334,
 				"last_connection": "x.x.x.x:6334"
 			}

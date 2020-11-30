@@ -9,13 +9,15 @@ import network
 server = None
 clients = []
 
-def start_server_thread():
-	ret = threading.Thread(target=start_server)
+
+def start_server_thread(server_ip, port):
+	ret = threading.Thread(target=start_server, args=(server_ip, port))
+	ret.daemon = True
 	ret.start()
-	#ret = network.Network("127.0.0.1",port)
 	return ret
 
-def start_server(server_ip,port):
+
+def start_server(server_ip, port):
 	server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 	try:
@@ -23,31 +25,34 @@ def start_server(server_ip,port):
 	except socket.error as e:
 		str(e)
 
-	server.listen(2) # Limited to 2 connections
+	server.listen(2)  # Limited to 2 connections
 	print("Waiting for a connection, Server Started")
 	while True:
 		conn, addr = server.accept()
-		threading.Thread(target=threaded_client,args=(conn)).start()
+		threading.Thread(target=threaded_client, args=(conn,)).start()
+
 
 def stop_server():
+	if server is not None:
 		server.close()
+
 
 def threaded_client(conn):
 	conn.send(str.encode("Connected"))
-	
+
 	clients.append(conn)
 
 	while True:
 		try:
 			data = conn.recv(2048)
-			data_variable = pickle.loads(data)
+			#data_variable = pickle.loads(data)
 
 			if not data:
 				break
 			for c in clients:
 				if not conn is c:
 					try:
-						c.sendall(data_variable)
+						c.sendall(data)
 					except:
 						break
 		except:

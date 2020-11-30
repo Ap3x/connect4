@@ -3,6 +3,7 @@ import pickle
 import threading
 import queue
 
+
 class Network:
 	"""Contains functions to connect and send data"""
 
@@ -40,14 +41,19 @@ class Network:
 			self.client.connect(self.addr)
 			if self.client.recv(2048).decode() == "Connected":
 				self.active = True
-				threading.Thread(target=Network.listener,args=(self)).start()
+				thread = threading.Thread(target=Network.listener, args=(self,))
+				thread.daemon = True
+				thread.start()
+				return True
 			else:
 				self.client.shutdown()
-		except:
-			pass
+				return False
+		except Exception as e:
+			print(e)
+			return False
 
 	def receive(self):
-		if self.xqu.empty:
+		if self.xqu.empty():
 			return None
 		return self.xqu.get_nowait()
 
@@ -58,6 +64,5 @@ class Network:
 		try:
 			data_stream = pickle.dumps(data)
 			self.client.sendall(data_stream)
-			return self.client.recv(2048)
 		except socket.error as e:
 			print(e)

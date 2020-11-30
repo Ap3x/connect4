@@ -457,11 +457,15 @@ class Game:
 
 				# Play a game end sound after the first render
 				if play_sound:
-					if self.game_type == GameType.SPECTATE or self.game_type == GameType.DOUBLE or self.winner == Winner.P1:
+					if self.winner == Winner.TIE:
+						c4gui.sfx.play("tie")
+					elif self.game_type == GameType.HOST:
+						c4gui.sfx.play("win" if self.winner == Winner.P1 else "lose")
+					elif self.game_type == GameType.JOIN:
+						c4gui.sfx.play("win" if self.winner == Winner.P2 else "lose")
+					elif self.game_type == GameType.SPECTATE or self.game_type == GameType.DOUBLE or self.winner == Winner.P1:
 						c4gui.sfx.play("win")
 					elif self.winner == Winner.P2:
 						c4gui.sfx.play("lose")
-					elif self.winner == Winner.TIE:
-						c4gui.sfx.play("tie")
 					pygame.time.delay(2500)
 					play_sound = False

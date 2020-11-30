@@ -2,8 +2,10 @@
 # -*- coding: utf8 -*-
 
 import c4gui
+import network
 import pygame
 import pygame_gui
+import server
 import socket
 from typing import Callable
 
@@ -17,17 +19,8 @@ class SubMenu:
 	NETWORK = 6
 	HOST = 7
 	JOIN = 8
-
-
-def callback_do_nothing() -> None:
-	"""
-	Callback to not trigger anything
-
-	from_menu -- The menu used to trigger the callback
-	"""
-
-	# TODO - Remove this callback when development is done
-	c4gui.sfx.play("invalid")
+	HOST_LOBBY = 9
+	JOIN_LOBBY = 10
 
 
 def get_ip_address():
@@ -59,6 +52,9 @@ class Menu:
 		self.reload_manager()
 		self.game_callback = game_callback
 		self.element_values = {}
+		self.network = None
+		self.network_data = None
+		self.server_started = False
 
 	def reload_manager(self):
 		self.manager = pygame_gui.UIManager((self.display_width, self.display_height), self.theme.gui_ext)
@@ -291,20 +287,22 @@ class Menu:
 			[Option] Port
 			[Button] Back
 			"""
-			c4gui.config.set("Network", "host_ip", get_ip_address())
 			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
 												 relative_rect=pygame.Rect((int(self.display_width / 2 - (150 + padding) + h_offset), v_offset - (button_height + padding)), (200, button_height)),
 												 text="Interface")
+			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
+												 relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset), v_offset - (button_height + padding) + 18), (200, 42)),
+												 text=get_ip_address())
+			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
+												 relative_rect=pygame.Rect((int(self.display_width / 2 - (150 + padding) + h_offset), v_offset), (200, button_height)),
+												 text="Port")
 			pygame_gui.elements.ui_text_entry_line.UITextEntryLine(manager=self.manager,
-																   relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset), v_offset - (button_height + padding) + 18), (200, 40)),
-																   object_id="set_host_ip").set_text(c4gui.config.get("Network", "host_ip", str))
-			pygame_gui.elements.ui_text_entry_line.UITextEntryLine(manager=self.manager,
-																   relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset + 300), v_offset - (button_height + padding) + 18), (200, 40)),
+																   relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset), v_offset + 18), (200, 40)),
 																   object_id="set_host_port").set_text(c4gui.config.get("Network", "host_port", str))
 			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
 												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 2 * (button_height + padding)), (button_width, button_height)),
 												   text="Begin Listening",
-												   object_id="call_game_host")
+												   object_id="call_lobby_host")
 			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
 												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 3 * (button_height + padding)), (button_width, button_height)),
 												   text="Back",
@@ -327,11 +325,83 @@ class Menu:
 			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
 												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 2 * (button_height + padding)), (button_width, button_height)),
 												   text="Join",
-												   object_id="call_game_join")
+												   object_id="call_lobby_join")
 			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
 												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 3 * (button_height + padding)), (button_width, button_height)),
 												   text="Back",
 												   object_id="call_menu_network")
+
+		elif self.submenu == SubMenu.HOST_LOBBY:
+
+			"""
+			Network Lobby Menu (Post-Connect)
+
+			[Option] P1 Name & Color
+			[Text] P2 Name & Color
+			[Button] Start Game
+			[Button] Back
+			"""
+			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
+												 relative_rect=pygame.Rect((int(self.display_width / 2 - (150 + padding) + h_offset), v_offset - 2 * (button_height + padding)), (200, button_height)),
+												 text="You")
+			pygame_gui.elements.ui_text_entry_line.UITextEntryLine(manager=self.manager,
+																   relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset), v_offset - 2 * (button_height + padding) + 18), (200, 40)),
+																   object_id="set_player1_name").set_text(c4gui.config.get("Player1", "name", str))
+			pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(manager=self.manager,
+																 relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset + 300), v_offset - 2 * (button_height + padding) + 25), (200, 40)),
+																 options_list=color_list,
+																 starting_option=c4gui.styles.get_color_name_from_tuple(c4gui.config.get("Player1", "color", tuple)),
+																 object_id="set_player1_color")
+			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
+												 relative_rect=pygame.Rect((0, v_offset - (button_height + padding)), (int(self.display_width), button_height)),
+												 text="Waiting for player..." if self.network_data is None else ("[" + self.network_data[1] + "] " + self.network_data[0]))
+			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
+												 relative_rect=pygame.Rect((int(self.display_width / 2 - (150 + padding) + h_offset), v_offset - (button_height + padding)), (200, button_height)),
+												 text="Opponent")
+			if self.network_data is not None:
+				pygame_gui.elements.ui_button.UIButton(manager=self.manager,
+													   relative_rect=pygame.Rect((horizontal_middle, v_offset + 2 * (button_height + padding)), (button_width, button_height)),
+													   text="Start Game",
+													   object_id="call_game_host")
+			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
+												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 3 * (button_height + padding)), (button_width, button_height)),
+												   text="Back",
+												   object_id="call_menu_host")
+
+		elif self.submenu == SubMenu.JOIN_LOBBY:
+
+			"""
+			Network Lobby Menu (Post-Connect)
+
+			[Option] P2 Name & Color
+			[Text] P1 Name & Color
+			[Button] Start Game
+			[Button] Back
+			"""
+			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
+												 relative_rect=pygame.Rect((int(self.display_width / 2 - (150 + padding) + h_offset), v_offset - 2 * (button_height + padding)), (200, button_height)),
+												 text="You")
+			pygame_gui.elements.ui_text_entry_line.UITextEntryLine(manager=self.manager,
+																   relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset), v_offset - 2 * (button_height + padding) + 18), (200, 40)),
+																   object_id="set_player1_name").set_text(c4gui.config.get("Player1", "name", str))
+			pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(manager=self.manager,
+																 relative_rect=pygame.Rect((int(self.display_width / 2 + padding + h_offset + 300), v_offset - 2 * (button_height + padding) + 25), (200, 40)),
+																 options_list=color_list,
+																 starting_option=c4gui.styles.get_color_name_from_tuple(c4gui.config.get("Player1", "color", tuple)),
+																 object_id="set_player1_color")
+			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
+												 relative_rect=pygame.Rect((0, v_offset - (button_height + padding)), (int(self.display_width), button_height)),
+												 text="Waiting for player..." if self.network_data is None else ("[" + self.network_data[1] + "] " + self.network_data[0]))
+			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
+												 relative_rect=pygame.Rect((int(self.display_width / 2 - (150 + padding) + h_offset), v_offset - (button_height + padding)), (200, button_height)),
+												 text="Opponent")
+			pygame_gui.elements.ui_label.UILabel(manager=self.manager,
+												 relative_rect=pygame.Rect((horizontal_middle, v_offset + 2 * (button_height + padding)), (button_width, button_height)),
+												 text="Waiting for host to start the game...")
+			pygame_gui.elements.ui_button.UIButton(manager=self.manager,
+												   relative_rect=pygame.Rect((horizontal_middle, v_offset + 3 * (button_height + padding)), (button_width, button_height)),
+												   text="Cancel",
+												   object_id="call_menu_join")
 
 		else:
 			raise IndexError("undefined submenu called")
@@ -386,6 +456,15 @@ class Menu:
 			self.set_sound(True)
 			c4gui.config.set("Global", "sfx_enabled", True)
 
+	def send_network_data(self, command: str = "") -> None:
+		"""Send player name and color over the network"""
+
+		if self.network is not None:
+			if command == "":
+				self.network.send((c4gui.config.get("Player1", "name", str), c4gui.styles.get_color_name_from_tuple(c4gui.config.get("Player1", "color", tuple))))
+			else:
+				self.network.send(command)
+
 	def render(self, surface: pygame.Surface, clock: pygame.time.Clock) -> None:
 		"""
 		Render all menu elements and loop until user interaction
@@ -406,6 +485,27 @@ class Menu:
 		while True:
 
 			time_delta = clock.tick(60) / 1000.0
+
+			# Handle network events
+			if self.network is not None:
+
+				# Check network queue
+				network_data = self.network.receive()
+				if network_data is not None:
+
+					# Send player info for the first time
+					if self.network_data is None:
+						self.send_network_data()
+
+					# Handle special network cases
+					if network_data == "DISCONNECT":
+						self.network_data = None
+					elif network_data == "START":
+						self.game_callback(self, c4gui.game.GameType.JOIN)
+					else:
+						self.network_data = network_data
+
+					self.generate()
 
 			# Handle and remove all events from the pygame queue from the last tick
 			# https://github.com/pygame/pygame/blob/e40d00db1f8015e8f37624f83a0bd334547cd8dc/docs/reST/ref/event.rst
@@ -452,10 +552,9 @@ class Menu:
 
 						if "set_player1_name" in event.ui_element.object_ids:
 							c4gui.config.set("Player1", "name", event.text)
+							self.send_network_data()
 						elif "set_player2_name" in event.ui_element.object_ids:
 							c4gui.config.set("Player2", "name", event.text)
-						elif "set_host_ip" in event.ui_element.object_ids:
-							c4gui.config.set("Network", "host_ip", event.text)
 						elif "set_host_port" in event.ui_element.object_ids:
 							c4gui.config.set("Network", "host_port", event.text)
 						elif "set_connection" in event.ui_element.object_ids:
@@ -465,6 +564,7 @@ class Menu:
 
 						if "set_player1_color" in event.ui_element.object_ids:
 							c4gui.config.set("Player1", "color", c4gui.styles.get_color_from_name(event.text))
+							self.send_network_data()
 						elif "set_player2_color" in event.ui_element.object_ids:
 							c4gui.config.set("Player2", "color", c4gui.styles.get_color_from_name(event.text))
 
@@ -491,9 +591,33 @@ class Menu:
 						elif "call_menu_spectate" in event.ui_element.object_ids:
 							self.submenu = SubMenu.SPECTATE
 						elif "call_menu_host" in event.ui_element.object_ids:
+							if self.server_started:
+								server.stop_server()
 							self.submenu = SubMenu.HOST
 						elif "call_menu_join" in event.ui_element.object_ids:
+							if self.network is not None:
+								self.send_network_data("DISCONNECT")
+								self.network = None
 							self.submenu = SubMenu.JOIN
+
+						# Lobby action
+						elif "call_lobby_host" in event.ui_element.object_ids:
+							server.start_server_thread("0.0.0.0", c4gui.config.get("Network", "host_port", int))
+							self.server_started = True
+							self.network = network.Network(server_ip="127.0.0.1", port=c4gui.config.get("Network", "host_port", int))
+							self.network.connect()
+							self.submenu = SubMenu.HOST_LOBBY
+						elif "call_lobby_join" in event.ui_element.object_ids:
+							network_parts = c4gui.config.get("Network", "last_connection", str).split(":", 1)
+							self.network = network.Network(server_ip=network_parts[0], port=int(network_parts[1]))
+							if self.network.connect():
+								print("sending")
+								self.network.send((c4gui.config.get("Player1", "name", str), c4gui.styles.get_color_name_from_tuple(c4gui.config.get("Player1", "color", tuple))))
+								print("sent")
+								self.submenu = SubMenu.JOIN_LOBBY
+							else:
+								# TODO throw join error message
+								self.submenu = SubMenu.JOIN
 
 						# Game action
 						elif "call_game_single" in event.ui_element.object_ids:
@@ -503,9 +627,8 @@ class Menu:
 						elif "call_game_spectate" in event.ui_element.object_ids:
 							self.game_callback(self, c4gui.game.GameType.SPECTATE)
 						elif "call_game_host" in event.ui_element.object_ids:
+							self.send_network_data("START")
 							self.game_callback(self, c4gui.game.GameType.HOST)
-						elif "call_game_join" in event.ui_element.object_ids:
-							self.game_callback(self, c4gui.game.GameType.JOIN)
 
 						# Invalid ID
 						else:
