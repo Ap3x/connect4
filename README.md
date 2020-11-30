@@ -33,12 +33,12 @@ After finishing the game, each turn may be reviewed by clicking on the navigatio
 	* Can "record" or "step-through" each state or move of the game and "review" a match's entire move sequence
 * Create 1-player game (human v. CPU)
 * Create local 2-player game (human v. human)
+* Create remote 2-player game through remote network LAN play
 * Quit the game entirely with Esc or Alt+F4
 * Hear sound effects with button events
 * Switch between light mode and dark mode
 
 ## To-Do
-* Create remote 2-player game through remote network (LAN?) play
 
 ## Download
 * [Latest release (v1.0)](https://github.com/Ap3x/connect4/archive/master.zip) (Stable)
