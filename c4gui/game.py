@@ -455,7 +455,7 @@ class Game:
 
 				# Play a game end sound after the first render
 				if play_sound:
-					if self.game_type == GameType.SPECTATE or self.winner == Winner.P1:
+					if self.game_type == GameType.SPECTATE or self.game_type == GameType.DOUBLE or self.winner == Winner.P1:
 						c4gui.sfx.play("win")
 					elif self.winner == Winner.P2:
 						c4gui.sfx.play("lose")
