@@ -1,0 +1,103 @@
+{
+  "#main": {
+    "colours": {
+      "normal_bg": "#25292e",
+      "hovered_bg": "#35393e",
+      "disabled_bg": "#25292e",
+      "selected_bg": "#25292e",
+      "active_bg": "#193784",
+      "normal_text": "#c5cbd8",
+      "hovered_text": "#FFFFFF",
+      "selected_text": "#FFFFFF",
+      "disabled_text": "#6d736f",
+      "active_text": "#6d736f",
+      "normal_border": "#AAAAAA",
+      "hovered_border": "#B0B0B0",
+      "disabled_border": "#808080",
+      "selected_border": "#8080B0",
+      "active_border": "#8080B0"
+    },
+    "font": {
+      "name": "Small",
+      "size": "30",
+      "bold": "0",
+      "italic": "0",
+      "regular_path" : ".\\assets\\fonts\\OpenSans-Regular.ttf",
+      "bold_path" : ".\\assets\\fonts\\OpenSans-Bold.ttf",
+      "italic_path" : ".\\assets\\fonts\\OpenSans-Italic.ttf",
+      "bold_italic_path" : ".\\assets\\fonts\\OpenSans-BoldItalic.ttf"
+    }
+  },
+  "button": {
+    "colours": {
+      "normal_bg": "#25292e",
+      "hovered_bg": "#35393e",
+      "disabled_bg": "#25292e",
+      "selected_bg": "#25292e",
+      "active_bg": "#45393e",
+      "normal_text": "#c5cbd8",
+      "hovered_text": "#FFFFFF",
+      "selected_text": "#FFFFFF",
+      "disabled_text": "#6d736f",
+      "active_text": "#e3e6ed",
+      "normal_border": "#AAAAAA",
+      "hovered_border": "#B0B0B0",
+      "disabled_border": "#808080",
+      "selected_border": "#8080B0",
+      "active_border": "#8080B0"
+    },
+    "font": {
+      "name": "Large",
+      "size": "40",
+      "bold": "0",
+      "italic": "0",
+      "regular_path" : ".\\assets\\fonts\\OpenSans-Regular.ttf",
+      "bold_path" : ".\\assets\\fonts\\OpenSans-Bold.ttf",
+      "italic_path" : ".\\assets\\fonts\\OpenSans-Italic.ttf",
+      "bold_italic_path" : ".\\assets\\fonts\\OpenSans-BoldItalic.ttf"
+    }
+  },
+  "#drop_down_default": {
+    "font": {
+      "name": "Custom",
+      "size": "20",
+      "bold": "0",
+      "italic": "0",
+      "regular_path" : ".\\assets\\fonts\\OpenSans-Regular.ttf",
+      "bold_path" : ".\\assets\\fonts\\OpenSans-Bold.ttf",
+      "italic_path" : ".\\assets\\fonts\\OpenSans-Italic.ttf",
+      "bold_italic_path" : ".\\assets\\fonts\\OpenSans-BoldItalic.ttf"
+    }
+  },
+  "drop_down_menu.button": {
+    "prototype": "#drop_down_default"
+  },
+  "drop_down_menu.#drop_down_options_list.button": {
+    "prototype": "#drop_down_default"
+  },
+  "drop_down_menu": {
+    "prototype": "#main"
+  },
+  "text_entry_line": {
+    "prototype": "#main"
+  },
+  "horizontal_slider": {
+    "prototype": "#main",
+    "misc": {
+      "sliding_button_width": "30",
+      "enable_arrow_buttons": "0"
+    }
+  },
+  "label": {
+    "prototype": "#main",
+    "colours": {
+      "dark_bg": "#FFFFFF",
+      "normal_border": "#FFFFFF",
+      "normal_text": "#000000"
+    },
+    "misc": {
+      "border_width": "0",
+      "shadow_width": "0"
+    }
+  }
+}
