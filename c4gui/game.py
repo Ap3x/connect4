@@ -5,6 +5,8 @@ import c4gui
 import copy
 import math
 import pygame
+import network
+import c4gui.styles
 
 from typing import Dict, Tuple, Callable
 
@@ -27,7 +29,7 @@ class GameType:
 class Game:
 	"""Handles game board rendering and animation."""
 
-	def __init__(self, game_type: int, theme: c4gui.Theme, display_width: int, display_height: int) -> None:
+	def __init__(self, game_type: int, theme: c4gui.Theme, display_width: int, display_height: int, net: network.Network) -> None:
 		"""
 		Set up board elements
 
@@ -51,6 +53,7 @@ class Game:
 		self.display_width: int = display_width
 		self.display_height: int = display_height
 		self.winner: int = Winner.NONE
+		self.network = net
 
 		# Determine players
 		if game_type == GameType.SINGLE:
@@ -69,10 +72,26 @@ class Game:
 														p2_name=c4gui.config.get("Computer2", "name", str),
 														p2_color=c4gui.config.get("Computer2", "color", tuple))
 		elif game_type == GameType.HOST:
-			pass  # TODO
+			oppTuple = None
+
+			while oppTuple is None:
+				oppTuple = self.network.receive()
+
+			self.players: c4gui.Players = c4gui.Players(p1_name=c4gui.config.get("Player1", "name", str),
+														p1_color=c4gui.config.get("Player1", "color", tuple),
+														p2_name=oppTuple[0],
+														p2_color=c4gui.styles.get_color_from_name(oppTuple[1]))
 
 		elif game_type == GameType.JOIN:
-			pass  # TODO
+			oppTuple = None
+
+			while oppTuple is None:
+				oppTuple = self.network.receive()
+
+			self.players: c4gui.Players = c4gui.Players(p2_name=c4gui.config.get("Player1", "name", str),
+														p2_color=c4gui.config.get("Player1", "color", tuple),
+														p1_name=oppTuple[0],
+														p1_color=c4gui.styles.get_color_from_name(oppTuple[1]))
 
 		# Calculate dimensions
 		self.top: int = self.display_height * c4gui.styles.PADDING_TOP
@@ -338,7 +357,7 @@ class Game:
 					# TODO - Move these turn events outside of pygame events loop; the only dependent turn event is the user's turn
 
 					# User's turn
-					if self.game_type == GameType.DOUBLE or p1turn and (self.game_type in [GameType.SINGLE, GameType.HOST]):
+					if self.game_type == GameType.DOUBLE or (p1turn and (self.game_type in [GameType.SINGLE, GameType.HOST])) or (not p1turn and self.game_type == GameType.JOIN):
 
 						if event.type == pygame.MOUSEMOTION:
 
@@ -350,7 +369,7 @@ class Game:
 							# Check if the mouse clicked within a tile relative to the valid list of columns
 							column: int = math.floor((event.pos[0] - self.grid_start_x) / self.tile_size)
 							if column in range(c4gui.MAX_COLS) and move_callback.human(self, p1turn, column):
-
+								self.network.send(column)
 								p1turn = self.end_turn(p1turn)
 								delay = c4gui.CPU_DELAY
 
@@ -372,9 +391,11 @@ class Game:
 						self.draw_turn(surface, p1turn)
 
 					# User-over-the-network's turn
-					elif self.game_type == GameType.HOST and not p1turn:
-						move_callback.network(self, p1turn)
-						p1turn = self.end_turn(p1turn)
+					elif (self.game_type == GameType.HOST and not p1turn) or (self.game_type == GameType.JOIN and p1turn):
+						column = self.network.receive()
+						if column is not None:
+							move_callback.human(self,p1turn,column)
+							p1turn = self.end_turn(p1turn)
 
 						# Force another redraw so the user doesn't have to invoke an event to see changes
 						self.draw_board(surface)
@@ -457,11 +478,15 @@ class Game:
 
 				# Play a game end sound after the first render
 				if play_sound:
-					if self.game_type == GameType.SPECTATE or self.game_type == GameType.DOUBLE or self.winner == Winner.P1:
+					if self.winner == Winner.TIE:
+						c4gui.sfx.play("tie")
+					elif self.game_type == GameType.HOST:
+						c4gui.sfx.play("win" if self.winner == Winner.P1 else "lose")
+					elif self.game_type == GameType.JOIN:
+						c4gui.sfx.play("win" if self.winner == Winner.P2 else "lose")
+					elif self.game_type == GameType.SPECTATE or self.game_type == GameType.DOUBLE or self.winner == Winner.P1:
 						c4gui.sfx.play("win")
 					elif self.winner == Winner.P2:
 						c4gui.sfx.play("lose")
-					elif self.winner == Winner.TIE:
-						c4gui.sfx.play("tie")
 					pygame.time.delay(2500)
 					play_sound = False

@@ -4,6 +4,7 @@
 import c4gui
 import c4utils
 import pygame
+import network
 
 # Establish the entire screen as the primary surface and prepare the clock
 screen: pygame.display = pygame.display.Info()
@@ -73,11 +74,6 @@ def player_event(from_game: c4gui.game.Game, p1turn: bool, column: int) -> bool:
     return True
 
 
-def network_event(from_game: c4gui.game.Game, p1turn: bool) -> None:
-    # TODO - Network events
-    pass
-
-
 def computer_event(from_game: c4gui.game.Game, p1turn: bool) -> None:
     """
     Callback to handle a computer's move
@@ -109,7 +105,7 @@ def computer_event(from_game: c4gui.game.Game, p1turn: bool) -> None:
     move_end_event(from_game, board, p1turn)
 
 
-def screen_game(from_menu: c4gui.menu, game_type: int) -> None:
+def screen_game(from_menu: c4gui.menu, game_type: int, net: network.Network = None) -> None:
     """
     Callback to run a game screen
 
@@ -118,8 +114,8 @@ def screen_game(from_menu: c4gui.menu, game_type: int) -> None:
 
     # Play the start sound and render a new game board
     c4gui.sfx.play("start")
-    game: c4gui.Game = c4gui.game.Game(game_type, from_menu.theme, WIDTH, HEIGHT)
-    game.render(DISPLAY, CLOCK, True, c4gui.MoveCallbacks(human=player_event, computer=computer_event, network=network_event), screen_menu)
+    game: c4gui.Game = c4gui.game.Game(game_type, from_menu.theme, WIDTH, HEIGHT, net)
+    game.render(DISPLAY, CLOCK, True, c4gui.MoveCallbacks(human=player_event, computer=computer_event), screen_menu)
 
 
 # Entrypoint straight into the main menu
