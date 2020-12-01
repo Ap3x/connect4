@@ -369,7 +369,8 @@ class Game:
 							# Check if the mouse clicked within a tile relative to the valid list of columns
 							column: int = math.floor((event.pos[0] - self.grid_start_x) / self.tile_size)
 							if column in range(c4gui.MAX_COLS) and move_callback.human(self, p1turn, column):
-								self.network.send(column)
+								if self.game_type in [GameType.HOST,GameType.JOIN]:
+									self.network.send(column)
 								p1turn = self.end_turn(p1turn)
 								delay = c4gui.CPU_DELAY
 
